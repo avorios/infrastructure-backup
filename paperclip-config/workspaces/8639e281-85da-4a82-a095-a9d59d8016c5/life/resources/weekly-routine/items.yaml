@@ -1,0 +1,93 @@
+# Weekly Routine Template -- Atomic Facts
+# Status: draft | active | superseded
+# Each item is a recurring weekly commitment or suggested time block.
+
+- id: wr-001
+  category: morning-routine
+  description: "Morning routine (daily): wake, exercise/stretch, breakfast, kids ready for school"
+  time: "06:30 - 08:00"
+  days: [mon, tue, wed, thu, fri]
+  status: draft
+  added: 2026-04-02
+  notes: "Exact times TBD -- need board's wake time and kids' school start"
+
+- id: wr-002
+  category: evening-routine
+  description: "Evening routine (daily): dinner, homework help, bedtime routines, wind-down"
+  time: "18:00 - 21:00"
+  days: [mon, tue, wed, thu, fri, sat, sun]
+  status: draft
+  added: 2026-04-02
+  notes: "Adjust based on kids' ages and activities"
+
+- id: wr-003
+  category: kids-activities
+  description: "Kids recurring activities (sports, lessons, tutoring)"
+  time: "[TBD]"
+  days: "[TBD]"
+  status: draft
+  added: 2026-04-02
+  notes: "Need specific activities, locations, and schedules from board"
+
+- id: wr-004
+  category: meal-planning
+  description: "Meal planning and grocery list -- prep for the week"
+  time: "Sunday morning"
+  days: [sun]
+  status: draft
+  added: 2026-04-02
+  notes: "Sunday is common but board may prefer another day"
+
+- id: wr-005
+  category: financial-checkin
+  description: "Weekly financial check-in: review spending, upcoming bills, budget status"
+  time: "Sunday evening or Monday morning"
+  days: [sun]
+  status: draft
+  added: 2026-04-02
+  notes: "15-30 min review. Day/time adjustable."
+
+- id: wr-006
+  category: relationship-touchpoints
+  description: "Social/relationship touchpoint: reach out to one friend or family member"
+  time: "Wednesday or Thursday"
+  days: [wed]
+  status: draft
+  added: 2026-04-02
+  notes: "Midweek check-in keeps relationships warm without weekend pressure"
+
+- id: wr-007
+  category: health
+  description: "Exercise / fitness block"
+  time: "[TBD]"
+  days: "[TBD - 3-4x/week recommended]"
+  status: draft
+  added: 2026-04-02
+  notes: "Need board's preferred activity and schedule"
+
+- id: wr-008
+  category: personal-admin
+  description: "Personal admin block: errands, appointments, mail, returns"
+  time: "Saturday morning"
+  days: [sat]
+  status: draft
+  added: 2026-04-02
+  notes: "Batch errands to keep weekdays clear"
+
+- id: wr-009
+  category: family-time
+  description: "Dedicated family time (no work, no screens)"
+  time: "Saturday afternoon or Sunday"
+  days: [sat, sun]
+  status: draft
+  added: 2026-04-02
+  notes: "Protected block -- board to confirm preferred window"
+
+- id: wr-010
+  category: weekly-review
+  description: "Weekly review with EA: upcoming week preview, action items, reminders"
+  time: "Sunday evening"
+  days: [sun]
+  status: draft
+  added: 2026-04-02
+  notes: "EA prepares summary; board reviews and flags changes"

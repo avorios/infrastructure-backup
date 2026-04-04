@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITCO Dashboard — Option B: Brutalist</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      background: #000;
+      color: #fff;
+      width: 1440px;
+      height: 900px;
+      overflow: hidden;
+    }
+
+    /* Header */
+    header {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: #fff;
+      border-bottom: 3px solid #000;
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .logo-sq {
+      width: 40px;
+      height: 40px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: -0.05em;
+      margin-right: 12px;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #000;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 400;
+      color: #666;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-blip {
+      width: 10px;
+      height: 10px;
+      background: #000;
+      border-radius: 50%;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .status-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #000;
+      font-weight: 500;
+    }
+
+    .header-time {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    /* KPI Strip — full width bar */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      border-bottom: 3px solid #fff;
+    }
+
+    .kpi-tile {
+      padding: 16px 20px;
+      border-right: 2px solid #fff;
+      background: #111;
+      position: relative;
+    }
+
+    .kpi-tile:last-child { border-right: none; }
+
+    .kpi-tile:nth-child(1) { background: #fff; color: #000; }
+    .kpi-tile:nth-child(1) .kpi-val { color: #000; }
+    .kpi-tile:nth-child(1) .kpi-name { color: #555; }
+
+    .kpi-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 400;
+      color: #555;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    .kpi-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      letter-spacing: 0.06em;
+    }
+
+    /* Main grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      height: calc(900px - 58px - 68px);
+    }
+
+    /* Agents panel */
+    .agents-panel {
+      border-right: 2px solid #fff;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 2px solid #fff;
+      background: #111;
+    }
+
+    .panel-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .panel-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #555;
+    }
+
+    /* Agent table */
+    .agent-table {
+      width: 100%;
+    }
+
+    .table-head {
+      display: grid;
+      grid-template-columns: 200px 1fr 100px 90px;
+      padding: 8px 24px;
+      background: #000;
+      border-bottom: 1px solid #222;
+    }
+
+    .th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 200px 1fr 100px 90px;
+      padding: 13px 24px;
+      align-items: center;
+      border-bottom: 1px solid #1a1a1a;
+      transition: background 0.1s;
+    }
+
+    .table-row:hover { background: #111; }
+
+    .tr-running { border-left: 3px solid #fff; }
+    .tr-blocked { border-left: 3px solid #f59e0b; }
+    .tr-idle { border-left: 3px solid #333; }
+
+    .agent-name-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .agent-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      width: 28px;
+      height: 28px;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .agent-nm {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .task-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #555;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid;
+    }
+
+    .st-running { border-color: #fff; color: #fff; }
+    .st-idle { border-color: #444; color: #444; }
+    .st-blocked { border-color: #f59e0b; color: #f59e0b; }
+
+    .cost-mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #555;
+    }
+
+    /* Activity panel */
+    .activity-panel {}
+
+    .act-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid #111;
+    }
+
+    .act-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .act-sq {
+      width: 8px;
+      height: 8px;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .act-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    .act-text b {
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .act-ts {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: #333;
+      margin-top: 4px;
+    }
+
+    /* Corner watermark */
+    .watermark {
+      position: fixed;
+      bottom: 12px;
+      right: 20px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo-block">
+      <div class="logo-sq">IR</div>
+      <div>
+        <div class="brand-name">HITCO</div>
+        <div class="brand-sub">AI Workforce</div>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="status-blip"></div>
+      <span class="status-text">SYSTEM_LIVE · 8 AGENTS</span>
+    </div>
+    <div class="header-time">21:02:44</div>
+  </header>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-tile">
+      <div class="kpi-val">8</div>
+      <div class="kpi-name">Total Agents</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-val">5</div>
+      <div class="kpi-name">Running</div>
+      <div class="kpi-tag" style="color:#fff;border:1px solid #333;">ACTIVE</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-val">142</div>
+      <div class="kpi-name">Done Today</div>
+      <div class="kpi-tag" style="color:#22c55e;border:1px solid #22c55e;">+12%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-val">2</div>
+      <div class="kpi-name">Blocked</div>
+      <div class="kpi-tag" style="color:#f59e0b;border:1px solid #f59e0b;">REVIEW</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-val">87%</div>
+      <div class="kpi-name">Efficiency</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-val">$4.20</div>
+      <div class="kpi-name">Daily Cost</div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+    <!-- Agents Panel -->
+    <div class="agents-panel">
+      <div class="panel-header">
+        <span class="panel-title">Agent Roster</span>
+        <span class="panel-count">→ 8 agents / 5 active</span>
+      </div>
+      <div class="agent-table">
+        <div class="table-head">
+          <div class="th">Agent</div>
+          <div class="th">Current Task</div>
+          <div class="th">Status</div>
+          <div class="th">Cost</div>
+        </div>
+        <div class="table-row tr-running">
+          <div class="agent-name-cell">
+            <div class="agent-mono">CD</div>
+            <div class="agent-nm">Claude Coder</div>
+          </div>
+          <div class="task-mono">Implementing auth middleware</div>
+          <div><span class="status-tag st-running">Running</span></div>
+          <div class="cost-mono">$0.84</div>
+        </div>
+        <div class="table-row tr-running">
+          <div class="agent-name-cell">
+            <div class="agent-mono">PM</div>
+            <div class="agent-nm">Product Manager</div>
+          </div>
+          <div class="task-mono">Reviewing sprint backlog</div>
+          <div><span class="status-tag st-running">Running</span></div>
+          <div class="cost-mono">$0.42</div>
+        </div>
+        <div class="table-row tr-idle">
+          <div class="agent-name-cell">
+            <div class="agent-mono" style="background:#222;color:#555;">FD</div>
+            <div class="agent-nm" style="color:#555;">Frontend Dev</div>
+          </div>
+          <div class="task-mono">—</div>
+          <div><span class="status-tag st-idle">Idle</span></div>
+          <div class="cost-mono">—</div>
+        </div>
+        <div class="table-row tr-blocked">
+          <div class="agent-name-cell">
+            <div class="agent-mono" style="background:#f59e0b;color:#000;">CT</div>
+            <div class="agent-nm">CTO Advisor</div>
+          </div>
+          <div class="task-mono">Blocked: waiting on product spec</div>
+          <div><span class="status-tag st-blocked">Blocked</span></div>
+          <div class="cost-mono">$0.21</div>
+        </div>
+        <div class="table-row tr-running">
+          <div class="agent-name-cell">
+            <div class="agent-mono">QA</div>
+            <div class="agent-nm">QA Engineer</div>
+          </div>
+          <div class="task-mono">Running test suite DAS-38</div>
+          <div><span class="status-tag st-running">Running</span></div>
+          <div class="cost-mono">$0.63</div>
+        </div>
+        <div class="table-row tr-running">
+          <div class="agent-name-cell">
+            <div class="agent-mono">BE</div>
+            <div class="agent-nm">Backend Dev</div>
+          </div>
+          <div class="task-mono">Optimizing DB queries</div>
+          <div><span class="status-tag st-running">Running</span></div>
+          <div class="cost-mono">$0.77</div>
+        </div>
+        <div class="table-row tr-idle">
+          <div class="agent-name-cell">
+            <div class="agent-mono" style="background:#222;color:#555;">DX</div>
+            <div class="agent-nm" style="color:#555;">DevOps</div>
+          </div>
+          <div class="task-mono">—</div>
+          <div><span class="status-tag st-idle">Idle</span></div>
+          <div class="cost-mono">—</div>
+        </div>
+        <div class="table-row tr-running">
+          <div class="agent-name-cell">
+            <div class="agent-mono">CE</div>
+            <div class="agent-nm">CEO Agent</div>
+          </div>
+          <div class="task-mono">Assigning weekly goals</div>
+          <div><span class="status-tag st-running">Running</span></div>
+          <div class="cost-mono">$1.33</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Panel -->
+    <div class="activity-panel">
+      <div class="panel-header">
+        <span class="panel-title">Event Log</span>
+        <span class="panel-count">→ recent</span>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#22c55e;"></div>
+          <div class="act-text"><b>CODER</b> completed DAS-39: API refactor</div>
+        </div>
+        <div class="act-ts">2 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#fff;"></div>
+          <div class="act-text"><b>PM</b> created 3 backlog issues</div>
+        </div>
+        <div class="act-ts">7 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#f59e0b;"></div>
+          <div class="act-text"><b>CTO</b> blocked — needs product spec</div>
+        </div>
+        <div class="act-ts">12 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#fff;"></div>
+          <div class="act-text"><b>QA</b> started regression suite</div>
+        </div>
+        <div class="act-ts">18 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#22c55e;"></div>
+          <div class="act-text"><b>BE</b> merged PR #88 — DB indexes</div>
+        </div>
+        <div class="act-ts">25 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#fff;"></div>
+          <div class="act-text"><b>CEO</b> assigned Q2 milestones</div>
+        </div>
+        <div class="act-ts">31 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#fff;"></div>
+          <div class="act-text"><b>FE</b> deployed widget mockups</div>
+        </div>
+        <div class="act-ts">45 MIN AGO</div>
+      </div>
+      <div class="act-item">
+        <div class="act-row">
+          <div class="act-sq" style="background:#22c55e;"></div>
+          <div class="act-text"><b>DEVOPS</b> CI pipeline health check passed</div>
+        </div>
+        <div class="act-ts">1 HR AGO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="watermark">Option B — Minimal Brutalist</div>
+</body>
+</html>

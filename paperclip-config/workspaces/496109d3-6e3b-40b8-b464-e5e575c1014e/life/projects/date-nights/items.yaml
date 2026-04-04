@@ -1,0 +1,16 @@
+- id: dn-001
+  type: date_plan
+  date_suggested: "2026-04-03"
+  target_dates: "2026-04-04 to 2026-04-11"
+  option_a:
+    restaurant: Brooklyn Chop House (FiDi)
+    drinks: Apotheke (Chinatown)
+    est_cost_pp: "$125-150"
+    status: suggested
+  option_b:
+    restaurant: Crevette (West Village)
+    drinks: The Garret (West Village)
+    est_cost_pp: "$100-140"
+    status: suggested
+  task: PER-12
+  status: active

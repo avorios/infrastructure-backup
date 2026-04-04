@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umbrelly — Investor Pitch Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --brand-50: #EEEDFE;
+    --brand-100: #CECBF6;
+    --brand-200: #AFA9EC;
+    --brand-400: #7F77DD;
+    --brand-600: #534AB7;
+    --brand-700: #4640A0;
+    --brand-800: #3C3489;
+    --brand-900: #26215C;
+    --sidebar-bg: #1E1B4B;
+    --shield-green: #1D9E75;
+    --shield-red: #E24B4A;
+    --shield-amber: #EF9F27;
+    --shield-blue: #378ADD;
+    --surface: #F8F9FB;
+    --text: #111827;
+    --text-muted: #6B7280;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    margin: 0 auto;
+  }
+
+  @media print {
+    body { margin: 0; }
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      page-break-after: always;
+      margin: 0;
+    }
+  }
+
+  @media screen {
+    .slide {
+      margin: 20px auto;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      border-radius: 8px;
+    }
+  }
+
+  /* ===== SLIDE LAYOUTS ===== */
+
+  /* --- Slide 1: Cover --- */
+  .slide-cover {
+    background: linear-gradient(135deg, var(--sidebar-bg) 0%, var(--brand-800) 50%, var(--brand-600) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    text-align: center;
+  }
+  .slide-cover .logo-mark {
+    width: 96px;
+    height: 96px;
+    margin-bottom: 32px;
+  }
+  .slide-cover h1 {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+  }
+  .slide-cover .tagline {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--brand-100);
+    margin-bottom: 48px;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+  .slide-cover .meta {
+    font-size: 14px;
+    color: var(--brand-200);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* --- Standard content slide --- */
+  .slide-content {
+    background: var(--white);
+    padding: 64px 80px;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide-content .slide-header {
+    margin-bottom: 40px;
+  }
+  .slide-content .slide-header .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brand-600);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .slide-content .slide-header h2 {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--sidebar-bg);
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+  }
+  .slide-content .slide-header h2 span {
+    color: var(--brand-600);
+  }
+  .slide-content .slide-body {
+    flex: 1;
+    display: flex;
+    gap: 48px;
+  }
+
+  /* --- Purple accent slide --- */
+  .slide-accent {
+    background: linear-gradient(135deg, var(--sidebar-bg) 0%, var(--brand-900) 100%);
+    padding: 64px 80px;
+    display: flex;
+    flex-direction: column;
+    color: var(--white);
+  }
+  .slide-accent .slide-header .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brand-200);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .slide-accent .slide-header h2 {
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    margin-bottom: 40px;
+  }
+  .slide-accent .slide-body {
+    flex: 1;
+    display: flex;
+    gap: 48px;
+  }
+
+  /* --- Shared components --- */
+  .stat-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 28px 32px;
+    flex: 1;
+  }
+  .stat-card .stat-value {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--brand-600);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-card .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .stat-card-dark {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 28px 32px;
+    flex: 1;
+  }
+  .stat-card-dark .stat-value {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--brand-200);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-card-dark .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.4;
+  }
+
+  .feature-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+  .feature-item {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--brand-50);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .feature-icon-dark {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .feature-text h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .feature-text p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .feature-text-light p {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pill-green { background: #ECFDF5; color: #065F46; }
+  .pill-amber { background: #FFFBEB; color: #92400E; }
+  .pill-red { background: #FEF2F2; color: #991B1B; }
+  .pill-blue { background: #EFF6FF; color: #1E40AF; }
+  .pill-purple { background: var(--brand-50); color: var(--brand-800); }
+
+  /* Footer bar */
+  .slide-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand-600) 0%, var(--shield-blue) 50%, var(--shield-green) 100%);
+  }
+
+  /* Charts */
+  .chart-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .bar-chart {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding-bottom: 32px;
+    border-bottom: 2px solid #E5E7EB;
+    position: relative;
+  }
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar {
+    width: 48px;
+    border-radius: 8px 8px 0 0;
+    transition: height 0.3s;
+  }
+  .bar-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    position: absolute;
+    bottom: 8px;
+  }
+
+  /* Competitive matrix */
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: 180px repeat(5, 1fr);
+    gap: 1px;
+    background: #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .matrix-cell {
+    background: var(--white);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+  }
+  .matrix-header {
+    background: var(--sidebar-bg);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .matrix-row-header {
+    background: var(--surface);
+    font-weight: 600;
+    justify-content: flex-start;
+    color: var(--text);
+  }
+  .matrix-check { color: var(--shield-green); font-weight: 700; font-size: 18px; }
+  .matrix-partial { color: var(--shield-amber); font-weight: 700; font-size: 18px; }
+  .matrix-miss { color: #D1D5DB; font-size: 18px; }
+  .matrix-highlight {
+    background: var(--brand-50);
+  }
+
+  /* Product mockup */
+  .mockup-frame {
+    background: var(--sidebar-bg);
+    border-radius: 12px;
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .mockup-topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .mockup-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .mockup-body {
+    background: var(--surface);
+    border-radius: 8px;
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  .mockup-sidebar {
+    width: 180px;
+    background: var(--sidebar-bg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mockup-nav-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+  }
+  .mockup-nav-item.active {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+  }
+  .mockup-main {
+    flex: 1;
+    padding: 20px;
+    background: var(--surface);
+  }
+  .mockup-card {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .mockup-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .mockup-screen {
+    background: linear-gradient(135deg, #E0E7FF, #C7D2FE);
+    border-radius: 6px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--brand-700);
+    font-weight: 600;
+    position: relative;
+  }
+  .mockup-screen .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--shield-green);
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+
+  /* Timeline / roadmap */
+  .timeline {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    align-items: stretch;
+  }
+  .timeline-phase {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline-phase:last-child { border-right: none; }
+  .timeline-phase .phase-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    color: var(--brand-200);
+  }
+  .timeline-phase .phase-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .timeline-phase .phase-items {
+    font-size: 12px;
+    line-height: 2;
+    color: rgba(255,255,255,0.7);
+  }
+  .phase-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .phase-done { background: rgba(29,158,117,0.2); color: #6EE7B7; }
+  .phase-active { background: rgba(239,159,39,0.2); color: #FCD34D; }
+  .phase-upcoming { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); }
+
+  /* Financial projections */
+  .fin-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+  }
+  .fin-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid #E5E7EB;
+  }
+  .fin-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #F3F4F6;
+  }
+  .fin-table .row-label {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .fin-table .highlight {
+    font-weight: 700;
+    color: var(--brand-600);
+  }
+
+  /* Ask slide */
+  .ask-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 40px;
+    flex: 1;
+    text-align: center;
+  }
+  .ask-amount {
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .ask-type {
+    font-size: 18px;
+    color: var(--brand-200);
+    margin-bottom: 32px;
+  }
+  .use-of-funds {
+    text-align: left;
+  }
+  .fund-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .fund-bar-bg {
+    flex: 1;
+    height: 28px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .fund-bar {
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .fund-label {
+    width: 140px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    text-align: right;
+  }
+  .fund-pct {
+    width: 40px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--brand-200);
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== SLIDE 1: COVER ==================== -->
+<div class="slide slide-cover">
+  <svg class="logo-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path fill="rgba(255,255,255,0.15)" d="M50 8C48 8 47 10 47 13L47 18C31 21 11 36 11 53H26Q33 63 40 53H60Q67 63 74 53H89C89 36 69 21 53 18L53 13C53 10 52 8 50 8Z"/>
+    <path fill="rgba(255,255,255,0.15)" d="M26 53L26 76C26 86 33 92 42 92H45L45 70Q50 76 55 70L55 92H58C67 92 74 86 74 76L74 53L60 53L60 70Q50 76 40 70L40 53Z"/>
+    <path fill="white" d="M50 12C48.5 12 47.5 13.5 47.5 16L47.5 20C33 23 15 37 15 52H28Q34.5 61 41 52H59Q65.5 61 72 52H85C85 37 67 23 52.5 20L52.5 16C52.5 13.5 51.5 12 50 12Z"/>
+    <path fill="white" d="M28 52L28 74C28 83 34 88 42 88H44L44 68Q50 74 56 68L56 88H58C66 88 72 83 72 74L72 52L59 52L59 68Q50 74 41 68L41 52Z"/>
+  </svg>
+  <h1>Umbrelly</h1>
+  <p class="tagline">Privacy-first classroom monitoring and student safety for K-12 schools</p>
+  <p class="meta">Investor Presentation &bull; Q2 2026</p>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 2: PROBLEM ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">The Problem</div>
+    <h2>Schools are flying blind on <span>student safety</span></h2>
+  </div>
+  <div class="slide-body">
+    <div style="flex:1; display:flex; flex-direction:column; gap:24px;">
+      <div class="feature-row" style="flex-direction:column; gap:24px;">
+        <div class="feature-item">
+          <div class="feature-icon">&#9888;</div>
+          <div class="feature-text">
+            <h4>No visibility during class time</h4>
+            <p>Teachers manage 25+ students on devices with zero insight into what's on their screens. Harmful content goes undetected until it's too late.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">&#128274;</div>
+          <div class="feature-text">
+            <h4>Privacy concerns block adoption</h4>
+            <p>Existing tools monitor 24/7 with no boundaries. Parents distrust always-on surveillance. Schools face FERPA/COPPA compliance risks.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">&#128200;</div>
+          <div class="feature-text">
+            <h4>Fragmented, outdated tooling</h4>
+            <p>Districts juggle 3-5 separate tools for monitoring, filtering, wellness, and SIS integration. Legacy software built on decade-old architectures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
+      <div class="stat-card">
+        <div class="stat-value">73%</div>
+        <div class="stat-label">of teachers say they cannot see what students do on devices during class</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">45%</div>
+        <div class="stat-label">of parents worry about always-on school monitoring tools</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$2.1B</div>
+        <div class="stat-label">annual K-12 spend on fragmented safety and filtering tools</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 3: SOLUTION ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Our Solution</div>
+    <h2>Session-based monitoring that <span>respects privacy</span></h2>
+  </div>
+  <div class="slide-body" style="flex-direction:column; gap:28px;">
+    <div class="feature-row">
+      <div class="feature-item">
+        <div class="feature-icon" style="background: #ECFDF5;">&#128994;</div>
+        <div class="feature-text">
+          <h4>Active Session Only</h4>
+          <p>Monitoring activates only during class sessions. No 24/7 surveillance. Full audit trail of every capture.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background: #EFF6FF;">&#129302;</div>
+        <div class="feature-text">
+          <h4>AI-Powered Safety</h4>
+          <p>Claude AI detects harmful content, cyberbullying patterns, and student wellness signals in real-time.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background: #FDF4FF;">&#127919;</div>
+        <div class="feature-text">
+          <h4>Smart Filtering</h4>
+          <p>Context-aware web filtering that adapts to lesson plans. Auto-switches policies between school and home.</p>
+        </div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-item">
+        <div class="feature-icon" style="background: #FFFBEB;">&#128101;</div>
+        <div class="feature-text">
+          <h4>Role-Based Access</h4>
+          <p>Six distinct roles (teacher, admin, parent, student, IT, super admin) each see only what they need.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background: #FEF2F2;">&#128737;</div>
+        <div class="feature-text">
+          <h4>FERPA/COPPA Compliant</h4>
+          <p>Built from day one for education privacy laws. Data minimization, parental consent flows, secure storage.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon" style="background: #F0FDF4;">&#128279;</div>
+        <div class="feature-text">
+          <h4>SIS Integration</h4>
+          <p>Plug into Google Classroom, Clever, ClassLink, and PowerSchool. Zero manual class roster management.</p>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; gap:12px; margin-top:8px;">
+      <span class="pill pill-purple">Privacy-First</span>
+      <span class="pill pill-green">FERPA Compliant</span>
+      <span class="pill pill-blue">AI-Powered</span>
+      <span class="pill pill-amber">Real-Time</span>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 4: PRODUCT DEMO ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Product</div>
+    <h2>Built for the <span>modern classroom</span></h2>
+  </div>
+  <div class="slide-body" style="gap:32px;">
+    <div class="mockup-frame" style="flex:1.4;">
+      <div class="mockup-topbar">
+        <div class="mockup-dot" style="background:#E24B4A;"></div>
+        <div class="mockup-dot" style="background:#EF9F27;"></div>
+        <div class="mockup-dot" style="background:#1D9E75;"></div>
+        <span style="flex:1; text-align:center; color:rgba(255,255,255,0.4); font-size:11px;">umbrelly.dev &mdash; Teacher Dashboard</span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px; padding:4px;">
+            <svg viewBox="0 0 100 100" width="20" height="20"><path fill="#534AB7" d="M50 12C48.5 12 47.5 13.5 47.5 16L47.5 20C33 23 15 37 15 52H28Q34.5 61 41 52H59Q65.5 61 72 52H85C85 37 67 23 52.5 20L52.5 16C52.5 13.5 51.5 12 50 12Z"/><path fill="#534AB7" d="M28 52L28 74C28 83 34 88 42 88H44L44 68Q50 74 56 68L56 88H58C66 88 72 83 72 74L72 52L59 52L59 68Q50 74 41 68L41 52Z"/></svg>
+            <span style="color:white; font-size:13px; font-weight:700;">Umbrelly</span>
+          </div>
+          <div class="mockup-nav-item active">&#9632; Dashboard</div>
+          <div class="mockup-nav-item">&#128214; My Classes</div>
+          <div class="mockup-nav-item">&#128065; Live Monitor</div>
+          <div class="mockup-nav-item">&#128202; Reports</div>
+          <div class="mockup-nav-item">&#128276; Alerts</div>
+          <div class="mockup-nav-item">&#9881; Settings</div>
+        </div>
+        <div class="mockup-main">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div>
+              <div style="font-size:14px; font-weight:700; color:var(--text);">Live Classroom &mdash; Period 3</div>
+              <div style="font-size:11px; color:var(--text-muted);">AP Computer Science &bull; 28 students online</div>
+            </div>
+            <span class="pill pill-green" style="font-size:10px;">&#9679; LIVE SESSION</span>
+          </div>
+          <div class="mockup-grid">
+            <div class="mockup-screen"><div class="live-dot"></div>Student 1</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 2</div>
+            <div class="mockup-screen" style="background:linear-gradient(135deg,#FDE68A,#FCD34D); color:#92400E;"><div class="live-dot" style="background:var(--shield-amber);"></div>&#9888; Alert</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 4</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 5</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 6</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 7</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 8</div>
+            <div class="mockup-screen"><div class="live-dot"></div>Student 9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:0.6; display:flex; flex-direction:column; gap:16px; justify-content:center;">
+      <div style="padding:20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:6px;">&#128065; Real-time screen grid</div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">Teachers see every student screen in a live grid. Configurable capture intervals from 3-30 seconds.</div>
+      </div>
+      <div style="padding:20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:6px;">&#128276; AI flag alerts</div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">Harmful content, off-task behavior, and wellness concerns are flagged instantly with severity levels.</div>
+      </div>
+      <div style="padding:20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700; margin-bottom:6px;">&#128187; Browser extension</div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">Lightweight Chrome/Edge extension. Manifest V3. Zero student-visible overhead.</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 5: MARKET SIZE ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Market Opportunity</div>
+    <h2>A <span>$16B+</span> addressable market</h2>
+  </div>
+  <div class="slide-body">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+      <!-- Concentric circles for TAM/SAM/SOM -->
+      <svg viewBox="0 0 400 400" width="400" height="380">
+        <!-- TAM -->
+        <circle cx="200" cy="200" r="180" fill="var(--brand-50)" stroke="var(--brand-200)" stroke-width="2"/>
+        <text x="200" y="55" text-anchor="middle" font-family="Inter" font-size="13" fill="var(--brand-700)" font-weight="600">TAM</text>
+        <text x="200" y="75" text-anchor="middle" font-family="Inter" font-size="22" fill="var(--brand-800)" font-weight="800">$16.4B</text>
+        <text x="200" y="93" text-anchor="middle" font-family="Inter" font-size="10" fill="var(--text-muted)">Global K-12 EdTech Safety</text>
+        <!-- SAM -->
+        <circle cx="200" cy="220" r="120" fill="var(--brand-100)" stroke="var(--brand-400)" stroke-width="2"/>
+        <text x="200" y="140" text-anchor="middle" font-family="Inter" font-size="13" fill="var(--brand-700)" font-weight="600">SAM</text>
+        <text x="200" y="162" text-anchor="middle" font-family="Inter" font-size="22" fill="var(--brand-800)" font-weight="800">$4.2B</text>
+        <text x="200" y="180" text-anchor="middle" font-family="Inter" font-size="10" fill="var(--text-muted)">US School Monitoring + Filtering</text>
+        <!-- SOM -->
+        <circle cx="200" cy="260" r="60" fill="var(--brand-600)" stroke="var(--brand-800)" stroke-width="2"/>
+        <text x="200" y="248" text-anchor="middle" font-family="Inter" font-size="13" fill="var(--brand-100)" font-weight="600">SOM</text>
+        <text x="200" y="270" text-anchor="middle" font-family="Inter" font-size="22" fill="white" font-weight="800">$420M</text>
+        <text x="200" y="288" text-anchor="middle" font-family="Inter" font-size="10" fill="var(--brand-200)">Year 5 Target</text>
+      </svg>
+    </div>
+    <div style="flex:0.9; display:flex; flex-direction:column; gap:20px; justify-content:center;">
+      <div style="font-size:14px; line-height:1.7; color:var(--text-muted); margin-bottom:8px;">
+        <strong style="color:var(--text);">130,000+</strong> K-12 schools in the US alone, each spending <strong style="color:var(--text);">$5-15 per student/year</strong> on monitoring and safety tools.
+      </div>
+      <div class="stat-card" style="padding:20px 24px;">
+        <div class="stat-value" style="font-size:28px;">18% CAGR</div>
+        <div class="stat-label">K-12 digital safety market growth through 2030</div>
+      </div>
+      <div class="stat-card" style="padding:20px 24px;">
+        <div class="stat-value" style="font-size:28px;">55M</div>
+        <div class="stat-label">US K-12 students using school-issued devices daily</div>
+      </div>
+      <div class="stat-card" style="padding:20px 24px;">
+        <div class="stat-value" style="font-size:28px;">$8-12</div>
+        <div class="stat-label">Average per-student annual spend on monitoring/filtering</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 6: COMPETITIVE LANDSCAPE ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Competition</div>
+    <h2>Legacy players, <span>modern gap</span></h2>
+  </div>
+  <div class="slide-body" style="flex-direction:column;">
+    <div class="matrix-grid">
+      <div class="matrix-cell matrix-header">Feature</div>
+      <div class="matrix-cell matrix-header matrix-highlight" style="background:var(--brand-600);">Umbrelly</div>
+      <div class="matrix-cell matrix-header">GoGuardian</div>
+      <div class="matrix-cell matrix-header">Securly</div>
+      <div class="matrix-cell matrix-header">Lightspeed</div>
+      <div class="matrix-cell matrix-header">Bark</div>
+
+      <div class="matrix-cell matrix-row-header">Privacy-first (session only)</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+
+      <div class="matrix-cell matrix-row-header">AI content analysis</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+
+      <div class="matrix-cell matrix-row-header">Real-time screen viewing</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+
+      <div class="matrix-cell matrix-row-header">Wellness detection</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+
+      <div class="matrix-cell matrix-row-header">Auto school/home switching</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+
+      <div class="matrix-cell matrix-row-header">Modern tech stack</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+      <div class="matrix-cell"><span class="matrix-miss">&mdash;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+
+      <div class="matrix-cell matrix-row-header">Full SIS integration</div>
+      <div class="matrix-cell matrix-highlight"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-check">&#10003;</span></div>
+      <div class="matrix-cell"><span class="matrix-partial">~</span></div>
+    </div>
+    <div style="margin-top:16px; display:flex; gap:24px; font-size:12px; color:var(--text-muted);">
+      <span><span class="matrix-check">&#10003;</span> Full support</span>
+      <span><span class="matrix-partial">~</span> Partial</span>
+      <span><span class="matrix-miss">&mdash;</span> Not available</span>
+      <span style="margin-left:auto;"><strong style="color:var(--brand-600);">Umbrelly is the only privacy-first, AI-native platform with full feature parity.</strong></span>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 7: BUSINESS MODEL ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Business Model</div>
+    <h2>Per-student SaaS with <span>district-level</span> contracts</h2>
+  </div>
+  <div class="slide-body">
+    <div style="flex:1; display:flex; flex-direction:column; gap:20px;">
+      <div style="background:var(--surface); border-radius:16px; padding:28px 32px;">
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:4px;">
+          <span style="font-size:32px; font-weight:800; color:var(--brand-600);">$8</span>
+          <span style="font-size:14px; color:var(--text-muted);">/student/year</span>
+        </div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px;">Essential</div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">Monitoring + filtering + basic alerts.<br/>Ideal for small schools.</div>
+      </div>
+      <div style="background:var(--brand-50); border:2px solid var(--brand-200); border-radius:16px; padding:28px 32px;">
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:4px;">
+          <span style="font-size:32px; font-weight:800; color:var(--brand-600);">$12</span>
+          <span style="font-size:14px; color:var(--text-muted);">/student/year</span>
+        </div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px;">Professional <span class="pill pill-purple" style="font-size:10px;">MOST POPULAR</span></div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">+ AI wellness detection + parent portal + advanced reports.<br/>District-level contracts.</div>
+      </div>
+      <div style="background:var(--surface); border-radius:16px; padding:28px 32px;">
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:4px;">
+          <span style="font-size:32px; font-weight:800; color:var(--brand-600);">$18</span>
+          <span style="font-size:14px; color:var(--text-muted);">/student/year</span>
+        </div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px;">Enterprise</div>
+        <div style="font-size:12px; color:var(--text-muted); line-height:1.6;">+ SSO, custom SIS, dedicated CSM, SLA.<br/>Large districts and state deployments.</div>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:20px; justify-content:center;">
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:28px;">90%+ Gross Margin</div>
+        <div class="stat-label">Pure SaaS with minimal per-student infrastructure cost</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:28px;">115% NDR Target</div>
+        <div class="stat-label">Expand via tier upgrades and district-wide rollout from pilot schools</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:28px;">3-Year Contracts</div>
+        <div class="stat-label">District procurement cycles favor multi-year commitments</div>
+      </div>
+      <div style="padding:20px 24px; background:var(--surface); border-radius:16px; font-size:13px; color:var(--text-muted); line-height:1.7;">
+        <strong style="color:var(--text);">Go-to-market:</strong> Land with a pilot school (free 60-day trial), expand to district-wide contract. Partner with SIS vendors (Clever, ClassLink) for distribution. Target E-Rate funding eligibility.
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 8: TRACTION / ROADMAP ==================== -->
+<div class="slide slide-accent">
+  <div class="slide-header">
+    <div class="label">Traction & Roadmap</div>
+    <h2>Phase 1 complete. Shipping fast.</h2>
+  </div>
+  <div class="slide-body" style="flex-direction:column; gap:24px;">
+    <div style="display:flex; gap:16px; margin-bottom:8px;">
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:32px;">109</div>
+        <div class="stat-label">Passing tests (unit + integration + E2E)</div>
+      </div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:32px;">6</div>
+        <div class="stat-label">Role types with full RBAC enforcement</div>
+      </div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:32px;">18+</div>
+        <div class="stat-label">Database models designed for scale</div>
+      </div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:32px;">15</div>
+        <div class="stat-label">API route modules live and tested</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="timeline-phase">
+        <div class="phase-label">Phase 1</div>
+        <div class="phase-status phase-done">&#10003; Complete</div>
+        <div class="phase-title">Foundation</div>
+        <div class="phase-items">
+          Auth + JWT + RBAC<br/>
+          Admin dashboard<br/>
+          Prisma schema (18+ models)<br/>
+          Express API (15 modules)<br/>
+          Next.js 14 frontend<br/>
+          109 passing tests
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="phase-label">Phase 2</div>
+        <div class="phase-status phase-active">&#9654; Active</div>
+        <div class="phase-title">Core Monitoring</div>
+        <div class="phase-items">
+          Browser extension (MV3)<br/>
+          Live screen grid<br/>
+          Socket.io streaming<br/>
+          Tab + URL tracking<br/>
+          Session management
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="phase-label">Phase 3</div>
+        <div class="phase-status phase-upcoming">Q3 2026</div>
+        <div class="phase-title">AI + Safety</div>
+        <div class="phase-items">
+          Claude AI content analysis<br/>
+          Wellness detection<br/>
+          Smart web filtering<br/>
+          Alert escalation engine
+        </div>
+      </div>
+      <div class="timeline-phase">
+        <div class="phase-label">Phase 4</div>
+        <div class="phase-status phase-upcoming">Q4 2026</div>
+        <div class="phase-title">Scale & Launch</div>
+        <div class="phase-items">
+          SIS integrations<br/>
+          Parent portal<br/>
+          Reporting dashboards<br/>
+          Pilot school program
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 9: TECHNOLOGY ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Technology</div>
+    <h2>Enterprise-grade architecture, <span>startup speed</span></h2>
+  </div>
+  <div class="slide-body">
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
+      <!-- Architecture diagram -->
+      <div style="background:var(--surface); border-radius:16px; padding:24px; flex:1;">
+        <svg viewBox="0 0 460 340" width="460" height="340" font-family="Inter" font-size="11">
+          <!-- Browser Extension -->
+          <rect x="10" y="10" width="130" height="60" rx="10" fill="var(--brand-50)" stroke="var(--brand-200)" stroke-width="1.5"/>
+          <text x="75" y="35" text-anchor="middle" font-weight="700" fill="var(--brand-800)" font-size="12">Browser Extension</text>
+          <text x="75" y="52" text-anchor="middle" fill="var(--text-muted)" font-size="9">Chrome/Edge MV3</text>
+
+          <!-- Arrow down -->
+          <line x1="75" y1="70" x2="75" y2="100" stroke="var(--brand-400)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- Socket.io -->
+          <rect x="10" y="100" width="130" height="50" rx="10" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5"/>
+          <text x="75" y="122" text-anchor="middle" font-weight="700" fill="#065F46" font-size="12">Socket.io</text>
+          <text x="75" y="138" text-anchor="middle" fill="var(--text-muted)" font-size="9">Real-time streaming</text>
+
+          <!-- Arrow right -->
+          <line x1="140" y1="125" x2="170" y2="125" stroke="var(--brand-400)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- Express API -->
+          <rect x="170" y="90" width="130" height="70" rx="10" fill="var(--brand-600)" stroke="var(--brand-800)" stroke-width="1.5"/>
+          <text x="235" y="118" text-anchor="middle" font-weight="700" fill="white" font-size="12">Express API</text>
+          <text x="235" y="135" text-anchor="middle" fill="var(--brand-100)" font-size="9">JWT + RBAC + Audit</text>
+          <text x="235" y="148" text-anchor="middle" fill="var(--brand-100)" font-size="9">15 route modules</text>
+
+          <!-- Arrow right to Next.js -->
+          <rect x="170" y="10" width="130" height="60" rx="10" fill="var(--sidebar-bg)" stroke="var(--brand-700)" stroke-width="1.5"/>
+          <text x="235" y="35" text-anchor="middle" font-weight="700" fill="white" font-size="12">Next.js 14</text>
+          <text x="235" y="52" text-anchor="middle" fill="var(--brand-200)" font-size="9">App Router + shadcn/ui</text>
+          <line x1="235" y1="70" x2="235" y2="90" stroke="var(--brand-400)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- Arrow right to DB -->
+          <line x1="300" y1="125" x2="330" y2="125" stroke="var(--brand-400)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- PostgreSQL -->
+          <rect x="330" y="90" width="120" height="70" rx="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5"/>
+          <text x="390" y="118" text-anchor="middle" font-weight="700" fill="#1E40AF" font-size="12">PostgreSQL</text>
+          <text x="390" y="135" text-anchor="middle" fill="var(--text-muted)" font-size="9">Prisma ORM</text>
+          <text x="390" y="148" text-anchor="middle" fill="var(--text-muted)" font-size="9">18+ models</text>
+
+          <!-- Redis -->
+          <rect x="330" y="10" width="120" height="60" rx="10" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.5"/>
+          <text x="390" y="35" text-anchor="middle" font-weight="700" fill="#991B1B" font-size="12">Redis</text>
+          <text x="390" y="52" text-anchor="middle" fill="var(--text-muted)" font-size="9">Cache + BullMQ jobs</text>
+          <line x1="390" y1="70" x2="390" y2="90" stroke="#FCA5A5" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- Claude AI -->
+          <rect x="10" y="180" width="130" height="60" rx="10" fill="#FDF4FF" stroke="#D8B4FE" stroke-width="1.5"/>
+          <text x="75" y="205" text-anchor="middle" font-weight="700" fill="#6B21A8" font-size="12">Claude AI</text>
+          <text x="75" y="222" text-anchor="middle" fill="var(--text-muted)" font-size="9">Content + wellness analysis</text>
+          <line x1="140" y1="210" x2="170" y2="160" stroke="#D8B4FE" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)"/>
+
+          <!-- SIS Integrations -->
+          <rect x="170" y="190" width="130" height="50" rx="10" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1.5"/>
+          <text x="235" y="212" text-anchor="middle" font-weight="700" fill="#92400E" font-size="12">SIS Adapters</text>
+          <text x="235" y="228" text-anchor="middle" fill="var(--text-muted)" font-size="9">Clever, ClassLink, Google</text>
+          <line x1="235" y1="190" x2="235" y2="160" stroke="#FCD34D" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)"/>
+
+          <!-- S3 -->
+          <rect x="330" y="190" width="120" height="50" rx="10" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+          <text x="390" y="212" text-anchor="middle" font-weight="700" fill="#065F46" font-size="12">S3 Storage</text>
+          <text x="390" y="228" text-anchor="middle" fill="var(--text-muted)" font-size="9">Screen snapshots</text>
+          <line x1="390" y1="190" x2="390" y2="160" stroke="#86EFAC" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrow)"/>
+
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="var(--brand-400)"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+    <div style="flex:0.6; display:flex; flex-direction:column; gap:14px; justify-content:center;">
+      <div style="padding:16px 20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700;">Monorepo</div>
+        <div style="font-size:11px; color:var(--text-muted);">Turborepo: web, api, extension, shared packages</div>
+      </div>
+      <div style="padding:16px 20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700;">Type-Safe</div>
+        <div style="font-size:11px; color:var(--text-muted);">End-to-end TypeScript with Zod validation</div>
+      </div>
+      <div style="padding:16px 20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700;">Test Coverage</div>
+        <div style="font-size:11px; color:var(--text-muted);">109 tests: unit, integration, E2E (Vitest)</div>
+      </div>
+      <div style="padding:16px 20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700;">Extensible</div>
+        <div style="font-size:11px; color:var(--text-muted);">Adapter pattern for SIS providers, pluggable AI</div>
+      </div>
+      <div style="padding:16px 20px; background:var(--surface); border-radius:12px;">
+        <div style="font-size:13px; font-weight:700;">Compliance-Ready</div>
+        <div style="font-size:11px; color:var(--text-muted);">FERPA/COPPA by design, audit logging built in</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 10: TEAM ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Team</div>
+    <h2>Built by people who <span>understand schools</span></h2>
+  </div>
+  <div class="slide-body" style="flex-direction:column; justify-content:center; gap:40px;">
+    <div style="display:flex; gap:40px;">
+      <div style="flex:1; text-align:center;">
+        <div style="width:80px; height:80px; border-radius:50%; background:var(--brand-600); margin:0 auto 16px; display:flex; align-items:center; justify-content:center;">
+          <svg viewBox="0 0 100 100" width="40" height="40"><path fill="white" d="M50 12C48.5 12 47.5 13.5 47.5 16L47.5 20C33 23 15 37 15 52H28Q34.5 61 41 52H59Q65.5 61 72 52H85C85 37 67 23 52.5 20L52.5 16C52.5 13.5 51.5 12 50 12Z"/><path fill="white" d="M28 52L28 74C28 83 34 88 42 88H44L44 68Q50 74 56 68L56 88H58C66 88 72 83 72 74L72 52L59 52L59 68Q50 74 41 68L41 52Z"/></svg>
+        </div>
+        <div style="font-size:16px; font-weight:700;">Founder & CEO</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Ivory Software</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:8px; line-height:1.6;">Vision, product strategy, and full-stack development. Building three SaaS products simultaneously.</div>
+      </div>
+      <div style="flex:1; text-align:center;">
+        <div style="width:80px; height:80px; border-radius:50%; background:var(--shield-blue); margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:28px; color:white;">&#128187;</div>
+        <div style="font-size:16px; font-weight:700;">AI Engineering Team</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Powered by Claude AI</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:8px; line-height:1.6;">AI-augmented development pipeline enabling rapid iteration. 109 tests, clean architecture, shipping weekly.</div>
+      </div>
+      <div style="flex:1; text-align:center;">
+        <div style="width:80px; height:80px; border-radius:50%; background:var(--shield-green); margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:28px; color:white;">&#127891;</div>
+        <div style="font-size:16px; font-weight:700;">Advisory Board</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Education + Safety Experts</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:8px; line-height:1.6;">K-12 administrators, EdTech veterans, and student privacy advocates shaping product direction.</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:16px; justify-content:center;">
+      <span class="pill pill-purple">3 SaaS Products</span>
+      <span class="pill pill-blue">AI-Augmented Dev</span>
+      <span class="pill pill-green">Shipping Weekly</span>
+      <span class="pill pill-amber">Education Domain Expertise</span>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 11: FINANCIAL PROJECTIONS ==================== -->
+<div class="slide slide-content">
+  <div class="slide-header">
+    <div class="label">Financials</div>
+    <h2>Path to <span>$10M ARR</span> in 3 years</h2>
+  </div>
+  <div class="slide-body" style="flex-direction:column; gap:24px;">
+    <div style="display:flex; gap:20px;">
+      <div class="stat-card" style="text-align:center;">
+        <div class="stat-value" style="font-size:28px;">$250K</div>
+        <div class="stat-label">Year 1 ARR<br/><span style="font-size:11px;">20 pilot districts</span></div>
+      </div>
+      <div class="stat-card" style="text-align:center;">
+        <div class="stat-value" style="font-size:28px;">$2.5M</div>
+        <div class="stat-label">Year 2 ARR<br/><span style="font-size:11px;">150 districts</span></div>
+      </div>
+      <div class="stat-card" style="text-align:center; background:var(--brand-50); border:2px solid var(--brand-200);">
+        <div class="stat-value" style="font-size:28px;">$10M</div>
+        <div class="stat-label">Year 3 ARR<br/><span style="font-size:11px;">500+ districts</span></div>
+      </div>
+      <div class="stat-card" style="text-align:center;">
+        <div class="stat-value" style="font-size:28px;">$28M</div>
+        <div class="stat-label">Year 5 ARR<br/><span style="font-size:11px;">1,200+ districts</span></div>
+      </div>
+    </div>
+    <table class="fin-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Year 1</th>
+          <th>Year 2</th>
+          <th>Year 3</th>
+          <th>Year 4</th>
+          <th>Year 5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">Districts</td>
+          <td>20</td>
+          <td>150</td>
+          <td>500</td>
+          <td>850</td>
+          <td>1,200</td>
+        </tr>
+        <tr>
+          <td class="row-label">Students (active)</td>
+          <td>25K</td>
+          <td>200K</td>
+          <td>750K</td>
+          <td>1.5M</td>
+          <td>2.5M</td>
+        </tr>
+        <tr>
+          <td class="row-label">ARPU (avg)</td>
+          <td>$10</td>
+          <td>$12.50</td>
+          <td>$13.30</td>
+          <td>$14</td>
+          <td>$14</td>
+        </tr>
+        <tr>
+          <td class="row-label">ARR</td>
+          <td class="highlight">$250K</td>
+          <td class="highlight">$2.5M</td>
+          <td class="highlight">$10M</td>
+          <td class="highlight">$21M</td>
+          <td class="highlight">$28M+</td>
+        </tr>
+        <tr>
+          <td class="row-label">Gross Margin</td>
+          <td>85%</td>
+          <td>88%</td>
+          <td>90%</td>
+          <td>91%</td>
+          <td>92%</td>
+        </tr>
+        <tr>
+          <td class="row-label">Net Revenue Retention</td>
+          <td>&mdash;</td>
+          <td>110%</td>
+          <td>115%</td>
+          <td>118%</td>
+          <td>120%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 12: THE ASK ==================== -->
+<div class="slide slide-accent">
+  <div class="slide-header">
+    <div class="label">The Ask</div>
+    <h2>Raising to ship and scale</h2>
+  </div>
+  <div class="slide-body" style="gap:40px;">
+    <div class="ask-card" style="display:flex; flex-direction:column; justify-content:center;">
+      <div class="ask-amount">$1.5M</div>
+      <div class="ask-type">Pre-Seed Round</div>
+      <div class="use-of-funds">
+        <div style="font-size:14px; font-weight:700; margin-bottom:20px; color:var(--brand-100);">Use of Funds</div>
+        <div class="fund-row">
+          <div class="fund-label">Engineering</div>
+          <div class="fund-bar-bg"><div class="fund-bar" style="width:45%; background:var(--brand-600);">45%</div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-label">Sales & GTM</div>
+          <div class="fund-bar-bg"><div class="fund-bar" style="width:25%; background:var(--shield-blue);">25%</div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-label">Compliance</div>
+          <div class="fund-bar-bg"><div class="fund-bar" style="width:15%; background:var(--shield-green);">15%</div></div>
+        </div>
+        <div class="fund-row">
+          <div class="fund-label">Operations</div>
+          <div class="fund-bar-bg"><div class="fund-bar" style="width:15%; background:var(--shield-amber);">15%</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:0.8; display:flex; flex-direction:column; gap:20px; justify-content:center;">
+      <div style="font-size:15px; font-weight:700; color:var(--brand-100); margin-bottom:4px;">18-Month Milestones</div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:24px;">Phase 2-4 Ship</div>
+        <div class="stat-label">Complete core monitoring, AI safety, and SIS integrations</div>
+      </div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:24px;">20 Pilot Districts</div>
+        <div class="stat-label">Paid pilots with measurable student safety outcomes</div>
+      </div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:24px;">$250K ARR</div>
+        <div class="stat-label">Revenue traction for Series A positioning</div>
+      </div>
+      <div class="stat-card-dark">
+        <div class="stat-value" style="font-size:24px;">SOC 2 Type II</div>
+        <div class="stat-label">Enterprise compliance certification for district sales</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"></div>
+</div>
+
+<!-- ==================== SLIDE 13: CLOSING ==================== -->
+<div class="slide slide-cover" style="background: linear-gradient(135deg, var(--brand-600) 0%, var(--sidebar-bg) 100%);">
+  <svg class="logo-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:72px; height:72px; margin-bottom:24px;">
+    <path fill="white" d="M50 12C48.5 12 47.5 13.5 47.5 16L47.5 20C33 23 15 37 15 52H28Q34.5 61 41 52H59Q65.5 61 72 52H85C85 37 67 23 52.5 20L52.5 16C52.5 13.5 51.5 12 50 12Z"/>
+    <path fill="white" d="M28 52L28 74C28 83 34 88 42 88H44L44 68Q50 74 56 68L56 88H58C66 88 72 83 72 74L72 52L59 52L59 68Q50 74 41 68L41 52Z"/>
+  </svg>
+  <h1 style="font-size:48px;">Thank You</h1>
+  <p class="tagline" style="font-size:18px; margin-bottom:32px;">Privacy-first student safety for every classroom</p>
+  <div style="display:flex; gap:32px; margin-bottom:48px;">
+    <div style="text-align:center;">
+      <div style="font-size:14px; font-weight:700; color:var(--white);">$16B+</div>
+      <div style="font-size:11px; color:var(--brand-200);">Market</div>
+    </div>
+    <div style="width:1px; background:rgba(255,255,255,0.2);"></div>
+    <div style="text-align:center;">
+      <div style="font-size:14px; font-weight:700; color:var(--white);">Phase 1 Done</div>
+      <div style="font-size:11px; color:var(--brand-200);">109 Tests Passing</div>
+    </div>
+    <div style="width:1px; background:rgba(255,255,255,0.2);"></div>
+    <div style="text-align:center;">
+      <div style="font-size:14px; font-weight:700; color:var(--white);">$1.5M</div>
+      <div style="font-size:11px; color:var(--brand-200);">Pre-Seed Ask</div>
+    </div>
+  </div>
+  <p class="meta" style="font-size:13px;">Ivory Software &bull; umbrelly.dev &bull; Q2 2026</p>
+  <div class="slide-footer"></div>
+</div>
+
+</body>
+</html>

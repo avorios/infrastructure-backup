@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ivory AI Dashboard</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #222536;
+      --border: #2e3148; --accent: #6366f1; --accent2: #818cf8;
+      --text: #e2e8f0; --muted: #64748b;
+      --green: #22c55e; --yellow: #eab308; --red: #ef4444;
+      --blue: #3b82f6; --purple: #a855f7; --orange: #f97316;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+    .app { display: flex; height: 100vh; overflow: hidden; }
+    .sidebar { width: 220px; min-width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { height: 52px; min-height: 52px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 10px; }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+    .sidebar-logo { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
+    .logo-text { font-weight: 600; font-size: 15px; }
+    .nav { padding: 8px; flex: 1; }
+    .nav-section { margin-bottom: 14px; }
+    .nav-section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--muted); letter-spacing: 0.08em; padding: 0 8px; margin-bottom: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; color: var(--muted); cursor: pointer; transition: all 0.15s; font-size: 13px; }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(99,102,241,0.15); color: var(--accent2); }
+    .nav-item .icon { width: 16px; text-align: center; }
+    .topbar-title { font-weight: 600; font-size: 15px; flex: 1; }
+    .status-indicator { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .status-dot.error { background: var(--red); }
+    .btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.15s; }
+    .btn:hover { border-color: var(--accent); color: var(--accent2); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: white; }
+    .btn-danger { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #f87171; }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+    .btn-success { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: #4ade80; }
+    .btn-success:hover { background: rgba(34,197,94,0.2); }
+    .btn-sm { padding: 3px 8px; font-size: 11px; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .card-value { font-size: 26px; font-weight: 700; line-height: 1; }
+    .card-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .section { margin-bottom: 28px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .section-title { font-size: 15px; font-weight: 600; }
+    .section-count { font-size: 12px; color: var(--muted); background: var(--surface2); padding: 2px 8px; border-radius: 10px; }
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--surface2); }
+    td { padding: 9px 14px; border-bottom: 1px solid rgba(46,49,72,0.6); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.015); }
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .badge-todo { background: rgba(100,116,139,0.15); color: var(--muted); } .badge-todo .badge-dot { background: var(--muted); }
+    .badge-in_progress { background: rgba(59,130,246,0.12); color: #60a5fa; } .badge-in_progress .badge-dot { background: #60a5fa; }
+    .badge-done { background: rgba(34,197,94,0.12); color: #4ade80; } .badge-done .badge-dot { background: #4ade80; }
+    .badge-blocked { background: rgba(239,68,68,0.12); color: #f87171; } .badge-blocked .badge-dot { background: #f87171; }
+    .badge-in_review { background: rgba(168,85,247,0.12); color: #c084fc; } .badge-in_review .badge-dot { background: #c084fc; }
+    .badge-backlog { background: rgba(100,116,139,0.1); color: #94a3b8; } .badge-backlog .badge-dot { background: #94a3b8; }
+    .badge-cancelled { background: rgba(100,116,139,0.1); color: #64748b; } .badge-cancelled .badge-dot { background: #64748b; }
+    .badge-pending { background: rgba(234,179,8,0.12); color: #fbbf24; } .badge-pending .badge-dot { background: #fbbf24; }
+    .badge-approved { background: rgba(34,197,94,0.12); color: #4ade80; } .badge-approved .badge-dot { background: #4ade80; }
+    .badge-rejected { background: rgba(239,68,68,0.12); color: #f87171; } .badge-rejected .badge-dot { background: #f87171; }
+    .badge-running { background: rgba(59,130,246,0.12); color: #60a5fa; } .badge-running .badge-dot { background: #60a5fa; }
+    .badge-queued { background: rgba(234,179,8,0.12); color: #fbbf24; } .badge-queued .badge-dot { background: #fbbf24; }
+    .badge-completed { background: rgba(34,197,94,0.12); color: #4ade80; } .badge-completed .badge-dot { background: #4ade80; }
+    .badge-failed { background: rgba(239,68,68,0.12); color: #f87171; } .badge-failed .badge-dot { background: #f87171; }
+    .priority-critical { color: var(--red); font-weight: 600; font-size: 11px; }
+    .priority-high { color: var(--orange); font-size: 11px; }
+    .priority-medium { color: var(--yellow); font-size: 11px; }
+    .priority-low { color: var(--muted); font-size: 11px; }
+    .agent-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 2px 7px; font-size: 11px; }
+    .agent-av { width: 16px; height: 16px; border-radius: 3px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: white; flex-shrink: 0; }
+    .agents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .agent-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; transition: border-color 0.15s; }
+    .agent-card:hover { border-color: rgba(99,102,241,0.4); }
+    .agent-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .agent-avatar-lg { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: white; flex-shrink: 0; }
+    .agent-name { font-weight: 600; font-size: 14px; }
+    .agent-title { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .agent-meta { display: flex; gap: 8px; font-size: 11px; color: var(--muted); flex-wrap: wrap; margin-bottom: 12px; }
+    .agent-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.4; }
+    .loading { display: flex; align-items: center; justify-content: center; padding: 40px; }
+    .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .page { display: none; }
+    .page.active { display: block; }
+    .identifier { font-size: 11px; color: var(--muted); font-family: monospace; }
+    .progress-bar-wrap { background: var(--surface2); border-radius: 4px; height: 5px; overflow: hidden; margin-top: 6px; }
+    .progress-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); }
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; display: none; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 2px; }
+    .modal-close:hover { color: var(--text); }
+    .form-group { margin-bottom: 14px; }
+    .form-label { font-size: 12px; font-weight: 500; margin-bottom: 5px; display: block; color: var(--muted); }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 13px; outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+    .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+    /* Comments */
+    .comment-thread { display: flex; flex-direction: column; gap: 12px; }
+    .comment { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .comment-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; color: var(--muted); }
+    .comment-body { font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
+    /* Setup overlay */
+    .setup-overlay { position: fixed; inset: 0; background: rgba(15,17,23,0.97); display: flex; align-items: center; justify-content: center; z-index: 200; }
+    .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 36px; width: 440px; max-width: 95vw; }
+    .setup-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .setup-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    .setup-label { font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block; }
+    .setup-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: 8px; font-size: 13px; outline: none; margin-bottom: 14px; }
+    .setup-input:focus { border-color: var(--accent); }
+    .setup-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .setup-btn:hover { background: var(--accent2); }
+    .setup-hint { font-size: 11px; color: var(--muted); margin-top: 12px; text-align: center; }
+    /* Toast */
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; z-index: 300; max-width: 320px; transform: translateY(20px); opacity: 0; transition: all 0.2s; pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .toast.error { border-color: rgba(239,68,68,0.4); color: #f87171; }
+    .toast.success { border-color: rgba(34,197,94,0.4); color: #4ade80; }
+    /* Issue detail panel */
+    .detail-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 500px; background: var(--surface); border-left: 1px solid var(--border); z-index: 50; transform: translateX(100%); transition: transform 0.25s; overflow-y: auto; padding: 24px; }
+    .detail-panel.open { transform: translateX(0); }
+    .detail-panel-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px; }
+    .detail-panel-close:hover { color: var(--text); }
+    /* Inline status select */
+    .status-select { background: transparent; border: none; cursor: pointer; font-size: 11px; padding: 0; outline: none; color: inherit; }
+    /* Tabs */
+    .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    .tab { padding: 8px 14px; font-size: 13px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent2); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- Setup -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-card">
+    <div style="font-size:28px;margin-bottom:12px;">📎</div>
+    <div class="setup-title">Ivory AI Dashboard</div>
+    <div class="setup-sub">Full control panel for Paperclip. Enter your credentials to continue.</div>
+    <label class="setup-label">API URL</label>
+    <input class="setup-input" id="sApiUrl" type="text" placeholder="http://localhost:3000" />
+    <label class="setup-label">API Key</label>
+    <input class="setup-input" id="sApiKey" type="password" placeholder="Bearer token…" />
+    <label class="setup-label">Company ID (auto-detected if blank)</label>
+    <input class="setup-input" id="sCompanyId" type="text" placeholder="xxxxxxxx-…" />
+    <button class="setup-btn" onclick="connect()">Connect</button>
+    <div class="setup-hint">Credentials stored in localStorage only.</div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Create Issue Modal -->
+<div class="modal-overlay" id="createIssueModal">
+  <div class="modal">
+    <div class="modal-title">New Issue <button class="modal-close" onclick="closeModal('createIssueModal')">×</button></div>
+    <div class="form-group">
+      <label class="form-label">Title *</label>
+      <input class="form-input" id="ci-title" placeholder="Issue title…" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="ci-desc" placeholder="Describe the issue…"></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="ci-status">
+          <option value="todo">Todo</option>
+          <option value="backlog">Backlog</option>
+          <option value="in_progress">In Progress</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Priority</label>
+        <select class="form-select" id="ci-priority">
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Assign Agent</label>
+      <select class="form-select" id="ci-agent">
+        <option value="">Unassigned</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Project</label>
+      <select class="form-select" id="ci-project">
+        <option value="">No project</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('createIssueModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createIssue()">Create Issue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Comment Modal -->
+<div class="modal-overlay" id="commentModal">
+  <div class="modal">
+    <div class="modal-title">Add Comment <button class="modal-close" onclick="closeModal('commentModal')">×</button></div>
+    <input type="hidden" id="cm-issueId" />
+    <div class="form-group">
+      <label class="form-label">Comment</label>
+      <textarea class="form-textarea" id="cm-body" placeholder="Write a comment…" style="min-height:100px"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('commentModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitComment()">Post Comment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Issue Detail Panel -->
+<div class="detail-panel" id="detailPanel">
+  <button class="detail-panel-close" onclick="closeDetail()">×</button>
+  <div id="detailContent">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div class="app" id="appShell" style="display:none;">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">Ivory AI</span>
+    </div>
+    <div class="nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" onclick="showPage('overview')" data-page="overview"><span class="icon">⊞</span> Dashboard</div>
+        <div class="nav-item" onclick="showPage('agents')" data-page="agents"><span class="icon">🤖</span> Agents</div>
+        <div class="nav-item" onclick="showPage('runs')" data-page="runs"><span class="icon">⚡</span> Runs</div>
+        <div class="nav-item" onclick="showPage('projects')" data-page="projects"><span class="icon">📁</span> Projects</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Work</div>
+        <div class="nav-item" onclick="showPage('issues')" data-page="issues"><span class="icon">📋</span> Issues</div>
+        <div class="nav-item" onclick="showPage('approvals')" data-page="approvals"><span class="icon">✅</span> Approvals</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Analytics</div>
+        <div class="nav-item" onclick="showPage('costs')" data-page="costs"><span class="icon">💰</span> Costs</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Settings</div>
+        <div class="nav-item" onclick="resetConfig()"><span class="icon">⚙</span> Reset Config</div>
+      </div>
+    </div>
+  </nav>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div class="status-indicator"><div class="status-dot" id="statusDot"></div><span id="statusText">Connected</span></div>
+      <button class="btn" onclick="refreshAll()">↺ Refresh</button>
+    </div>
+    <div class="content">
+
+      <!-- Dashboard -->
+      <div class="page active" id="page-overview">
+        <div class="cards-grid" id="overviewCards"><div class="loading"><div class="spinner"></div></div></div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Recent Issues</div></div>
+          <div class="table-wrap" id="recentIssues"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Agents -->
+      <div class="page" id="page-agents">
+        <div class="section">
+          <div class="section-header"><div class="section-title">Agents</div><span class="section-count" id="agentsCount">–</span></div>
+          <div class="agents-grid" id="agentsGrid"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Runs -->
+      <div class="page" id="page-runs">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Recent Runs</div>
+            <select id="runsAgentFilter" onchange="filterRuns()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none;">
+              <option value="">All agents</option>
+            </select>
+          </div>
+          <div class="table-wrap" id="runsTable"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Projects -->
+      <div class="page" id="page-projects">
+        <div class="section">
+          <div class="section-header"><div class="section-title">Projects</div><span class="section-count" id="projectsCount">–</span></div>
+          <div class="table-wrap" id="projectsTable"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Issues -->
+      <div class="page" id="page-issues">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Issues</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="section-count" id="issuesCount">–</span>
+              <select id="issueStatusFilter" onchange="filterIssues()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none;">
+                <option value="">All</option>
+                <option value="todo">Todo</option>
+                <option value="in_progress">In Progress</option>
+                <option value="blocked">Blocked</option>
+                <option value="in_review">In Review</option>
+                <option value="done">Done</option>
+                <option value="backlog">Backlog</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="openModal('createIssueModal')">+ New Issue</button>
+            </div>
+          </div>
+          <div class="table-wrap" id="issuesTable"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Costs -->
+      <div class="page" id="page-costs">
+        <div class="section">
+          <div class="section-header"><div class="section-title">Cost Tracking</div><span class="section-count" id="costsTotal">–</span></div>
+          <div class="cards-grid" id="costCards"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Per-Agent Spend</div></div>
+          <div class="table-wrap" id="costAgentTable"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+        <div class="section">
+          <div class="section-header"><div class="section-title">Budget Utilization</div></div>
+          <div id="budgetBars"></div>
+        </div>
+      </div>
+
+      <!-- Approvals -->
+      <div class="page" id="page-approvals">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Approval Queue</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="section-count" id="approvalsCount">–</span>
+              <select id="approvalStatusFilter" onchange="filterApprovals()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none;">
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+          <div id="approvalsContent"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────────────────────────
+let cfg = { apiUrl: '', apiKey: '', companyId: '' };
+let cache = { agents: [], projects: [], issues: [], approvals: [], runs: [] };
+let agentMap = {}, projectMap = {};
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('ivory_full_cfg');
+  if (saved) { try { cfg = {...cfg, ...JSON.parse(saved)}; if (cfg.apiUrl && cfg.apiKey) { startApp(); return; } } catch(_){} }
+  document.getElementById('sApiUrl').value = 'http://localhost:3000';
+  document.getElementById('setupOverlay').style.display = 'flex';
+});
+
+async function connect() {
+  cfg.apiUrl = document.getElementById('sApiUrl').value.replace(/\/$/, '');
+  cfg.apiKey = document.getElementById('sApiKey').value.trim();
+  cfg.companyId = document.getElementById('sCompanyId').value.trim();
+  try {
+    if (!cfg.companyId) { const me = await api('/api/agents/me'); cfg.companyId = me.companyId; }
+    localStorage.setItem('ivory_full_cfg', JSON.stringify(cfg));
+    startApp();
+  } catch(e) { toast('Connection failed: ' + e.message, 'error'); }
+}
+
+function startApp() {
+  document.getElementById('setupOverlay').style.display = 'none';
+  document.getElementById('appShell').style.display = 'flex';
+  refreshAll();
+}
+function resetConfig() { localStorage.removeItem('ivory_full_cfg'); location.reload(); }
+
+// ─── API ─────────────────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const r = await fetch(cfg.apiUrl + path, {
+    ...opts,
+    headers: { 'Authorization': 'Bearer ' + cfg.apiKey, 'Content-Type': 'application/json', ...(opts.headers||{}) }
+  });
+  if (!r.ok) { const t = await r.text(); throw new Error(r.status + ': ' + t.slice(0,120)); }
+  return r.json();
+}
+
+// ─── Refresh ─────────────────────────────────────────────────────────────────
+async function refreshAll() {
+  document.getElementById('statusDot').className = 'status-dot';
+  document.getElementById('statusText').textContent = 'Loading…';
+  try {
+    await Promise.all([loadAgents(), loadProjects(), loadIssues(), loadApprovals(), loadRuns()]);
+    renderCosts();
+    renderOverview();
+    document.getElementById('statusText').textContent = 'Live · ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    document.getElementById('statusDot').className = 'status-dot error';
+    document.getElementById('statusText').textContent = 'Error';
+    toast('Refresh failed: ' + e.message, 'error');
+  }
+}
+
+async function loadAgents() {
+  const d = await api('/api/companies/'+cfg.companyId+'/agents');
+  cache.agents = Array.isArray(d) ? d : (d.agents||[]);
+  agentMap = {};
+  cache.agents.forEach(a => { agentMap[a.id] = a; });
+  renderAgents();
+  // Populate agent selects
+  const sel = document.getElementById('ci-agent');
+  sel.innerHTML = '<option value="">Unassigned</option>' + cache.agents.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
+  const rsf = document.getElementById('runsAgentFilter');
+  rsf.innerHTML = '<option value="">All agents</option>' + cache.agents.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
+}
+
+async function loadProjects() {
+  const d = await api('/api/companies/'+cfg.companyId+'/projects');
+  cache.projects = Array.isArray(d) ? d : (d.projects||[]);
+  projectMap = {};
+  cache.projects.forEach(p => { projectMap[p.id] = p; });
+  renderProjects();
+  const sel = document.getElementById('ci-project');
+  sel.innerHTML = '<option value="">No project</option>' + cache.projects.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
+}
+
+async function loadIssues() {
+  const d = await api('/api/companies/'+cfg.companyId+'/issues?limit=300');
+  cache.issues = Array.isArray(d) ? d : (d.issues||[]);
+  renderIssues();
+}
+
+async function loadApprovals() {
+  try {
+    const d = await api('/api/companies/'+cfg.companyId+'/approvals');
+    cache.approvals = Array.isArray(d) ? d : (d.approvals||[]);
+  } catch(_) { cache.approvals = []; }
+  renderApprovals();
+}
+
+async function loadRuns() {
+  try {
+    // Collect runs from all agents
+    const runs = [];
+    for (const a of cache.agents) {
+      try {
+        const d = await api('/api/agents/'+a.id+'/runs?limit=10');
+        const arr = Array.isArray(d) ? d : (d.runs||[]);
+        arr.forEach(r => { r._agentId = a.id; r._agentName = a.name; });
+        runs.push(...arr);
+      } catch(_) {}
+    }
+    runs.sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0));
+    cache.runs = runs.slice(0, 100);
+  } catch(_) { cache.runs = []; }
+  renderRuns();
+}
+
+// ─── Render: Overview ────────────────────────────────────────────────────────
+function renderOverview() {
+  const issues = cache.issues;
+  const byStatus = {};
+  issues.forEach(i => { byStatus[i.status] = (byStatus[i.status]||0)+1; });
+  const done = byStatus['done']||0, total = issues.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('overviewCards').innerHTML = `
+    <div class="card"><div class="card-label">Agents</div><div class="card-value">${cache.agents.length}</div><div class="card-sub">${cache.agents.filter(a=>a.status==='running').length} running</div></div>
+    <div class="card"><div class="card-label">Projects</div><div class="card-value">${cache.projects.length}</div><div class="card-sub">${cache.projects.filter(p=>p.status==='in_progress').length} active</div></div>
+    <div class="card"><div class="card-label">In Progress</div><div class="card-value" style="color:var(--blue)">${byStatus['in_progress']||0}</div><div class="card-sub">${byStatus['blocked']||0} blocked</div></div>
+    <div class="card"><div class="card-label">Completion</div><div class="card-value">${pct}%</div><div class="card-sub"><div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div><span style="display:block;margin-top:4px">${done}/${total} done</span></div></div>
+    <div class="card"><div class="card-label">Pending Approvals</div><div class="card-value" style="color:var(--yellow)">${cache.approvals.filter(a=>a.status==='pending').length}</div><div class="card-sub">${cache.approvals.length} total</div></div>
+    <div class="card"><div class="card-label">Runs Today</div><div class="card-value">${cache.runs.filter(r => { try { return new Date(r.createdAt).toDateString() === new Date().toDateString(); } catch(_){return false;} }).length}</div><div class="card-sub">${cache.runs.length} recent</div></div>
+  `;
+  const recent = [...cache.issues].sort((a,b) => new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0, 10);
+  document.getElementById('recentIssues').innerHTML = issuesTableHtml(recent, true);
+}
+
+// ─── Render: Agents ──────────────────────────────────────────────────────────
+function renderAgents() {
+  document.getElementById('agentsCount').textContent = cache.agents.length;
+  if (!cache.agents.length) { document.getElementById('agentsGrid').innerHTML = '<div class="empty"><div class="empty-icon">🤖</div>No agents found.</div>'; return; }
+  document.getElementById('agentsGrid').innerHTML = cache.agents.map(a => `
+    <div class="agent-card">
+      <div class="agent-card-header">
+        <div class="agent-avatar-lg">${(a.name||'?')[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0">
+          <div class="agent-name">${esc(a.name||'Unnamed')}</div>
+          <div class="agent-title">${esc(a.title||a.role||'')}</div>
+        </div>
+        <div>${statusBadge(a.status||'unknown')}</div>
+      </div>
+      <div class="agent-meta">
+        <span>🔧 ${esc(a.adapterType||'–')}</span>
+        ${a.role ? `<span>👤 ${esc(a.role)}</span>` : ''}
+        ${a.budgetMonthlyCents ? `<span>💰 $${(a.budgetMonthlyCents/100).toFixed(0)}/mo</span>` : ''}
+        <span>💸 $${((a.spentMonthlyCents||0)/100).toFixed(2)} spent</span>
+      </div>
+      <div class="agent-actions">
+        <button class="btn btn-sm" onclick="triggerHeartbeat('${a.id}', '${esc(a.name)}')">▶ Heartbeat</button>
+        <button class="btn btn-sm" onclick="viewAgentRuns('${a.id}', '${esc(a.name)}')">📋 Runs</button>
+        ${a.status === 'running' ? `<button class="btn btn-sm btn-danger" onclick="pauseAgent('${a.id}')">⏸ Pause</button>` : `<button class="btn btn-sm btn-success" onclick="resumeAgent('${a.id}')">▶ Resume</button>`}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── Render: Runs ────────────────────────────────────────────────────────────
+function renderRuns() {
+  filterRuns();
+}
+function filterRuns() {
+  const filter = document.getElementById('runsAgentFilter')?.value || '';
+  const runs = filter ? cache.runs.filter(r => r._agentId === filter) : cache.runs;
+  if (!runs.length) { document.getElementById('runsTable').innerHTML = '<div class="empty"><div class="empty-icon">⚡</div>No runs found.</div>'; return; }
+  document.getElementById('runsTable').innerHTML = `
+    <table><thead><tr><th>Agent</th><th>Status</th><th>Trigger</th><th>Started</th><th>Finished</th></tr></thead>
+    <tbody>${runs.map(r => `<tr>
+      <td>${r._agentName ? `<div class="agent-chip"><div class="agent-av">${r._agentName[0]}</div>${esc(r._agentName)}</div>` : '–'}</td>
+      <td>${statusBadge(r.status||'unknown')}</td>
+      <td style="color:var(--muted);font-size:11px">${esc(r.invocationSource||r.triggerDetail||'–')}</td>
+      <td style="color:var(--muted)">${relTime(r.startedAt||r.createdAt)}</td>
+      <td style="color:var(--muted)">${r.finishedAt ? relTime(r.finishedAt) : '–'}</td>
+    </tr>`).join('')}</tbody></table>
+  `;
+}
+
+// ─── Render: Projects ────────────────────────────────────────────────────────
+function renderProjects() {
+  document.getElementById('projectsCount').textContent = cache.projects.length;
+  if (!cache.projects.length) { document.getElementById('projectsTable').innerHTML = '<div class="empty"><div class="empty-icon">📁</div>No projects found.</div>'; return; }
+  document.getElementById('projectsTable').innerHTML = `
+    <table><thead><tr><th>Name</th><th>Status</th><th>Issues</th><th>Completion</th><th>Updated</th></tr></thead>
+    <tbody>${cache.projects.map(p => {
+      const pi = cache.issues.filter(i => i.projectId === p.id);
+      const done = pi.filter(i => i.status==='done').length;
+      const pct = pi.length ? Math.round(done/pi.length*100) : 0;
+      return `<tr>
+        <td><strong style="cursor:pointer" onclick="filterIssuesByProject('${p.id}','${esc(p.name)}')">${esc(p.name)}</strong></td>
+        <td>${statusBadge(p.status)}</td>
+        <td><a href="#" onclick="filterIssuesByProject('${p.id}','${esc(p.name)}');return false;" style="color:var(--accent2);text-decoration:none">${pi.length} issues</a></td>
+        <td style="min-width:120px"><div style="display:flex;align-items:center;gap:8px">
+          <div class="progress-bar-wrap" style="flex:1"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+          <span style="font-size:11px;color:var(--muted);white-space:nowrap">${pct}%</span>
+        </div></td>
+        <td style="color:var(--muted)">${relTime(p.updatedAt)}</td>
+      </tr>`;
+    }).join('')}</tbody></table>
+  `;
+}
+
+// ─── Render: Issues ──────────────────────────────────────────────────────────
+let _projectFilter = null;
+function filterIssuesByProject(projectId, projectName) {
+  _projectFilter = projectId;
+  showPage('issues');
+  document.getElementById('issueStatusFilter').value = '';
+  const issues = cache.issues.filter(i => i.projectId === projectId);
+  document.getElementById('issuesCount').textContent = issues.length;
+  document.getElementById('issuesTable').innerHTML = `
+    <div style="padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);font-size:12px;display:flex;align-items:center;gap:8px">
+      📁 Showing issues for: <strong>${esc(projectName)}</strong>
+      <a href="#" onclick="clearProjectFilter();return false;" style="color:var(--accent2);margin-left:auto;font-size:11px">✕ Clear filter</a>
+    </div>
+    ${issuesTableHtml(issues, true).replace('<table>', '<table>').replace(/^<table>/, '')}
+  `;
+}
+function clearProjectFilter() { _projectFilter = null; filterIssues(); }
+function renderIssues() { filterIssues(); }
+function filterIssues() {
+  _projectFilter = null;
+  const filter = document.getElementById('issueStatusFilter')?.value || '';
+  const issues = filter ? cache.issues.filter(i => i.status === filter) : cache.issues;
+  document.getElementById('issuesCount').textContent = issues.length;
+  document.getElementById('issuesTable').innerHTML = issuesTableHtml(issues, true);
+}
+function issuesTableHtml(issues, withActions = false) {
+  if (!issues.length) return '<div class="empty"><div class="empty-icon">📋</div>No issues.</div>';
+  return `<table><thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Assignee</th>${withActions ? '<th>Actions</th>' : ''}<th>Updated</th></tr></thead>
+  <tbody>${issues.map(i => {
+    const agent = agentMap[i.assigneeAgentId];
+    return `<tr>
+      <td class="identifier">${esc(i.identifier||'')}</td>
+      <td style="max-width:260px;cursor:pointer" onclick="openIssueDetail('${i.id}')">${esc(i.title)}</td>
+      <td>${statusBadge(i.status)}</td>
+      <td class="priority-${i.priority}">${i.priority||'–'}</td>
+      <td>${agent ? `<div class="agent-chip"><div class="agent-av">${(agent.name||'?')[0]}</div>${esc(agent.name)}</div>` : '<span style="color:var(--muted)">–</span>'}</td>
+      ${withActions ? `<td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="openIssueDetail('${i.id}')">View</button>
+        <button class="btn btn-sm" style="margin-left:4px" onclick="openComment('${i.id}')">💬</button>
+      </td>` : ''}
+      <td style="color:var(--muted)">${relTime(i.updatedAt)}</td>
+    </tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+// ─── Render: Approvals ───────────────────────────────────────────────────────
+function renderApprovals() { filterApprovals(); }
+function filterApprovals() {
+  const filter = document.getElementById('approvalStatusFilter')?.value || '';
+  const approvals = filter ? cache.approvals.filter(a => a.status === filter) : cache.approvals;
+  document.getElementById('approvalsCount').textContent = approvals.length;
+  if (!approvals.length) { document.getElementById('approvalsContent').innerHTML = '<div class="table-wrap"><div class="empty"><div class="empty-icon">✅</div>No approvals found.</div></div>'; return; }
+  // Group pending first
+  const pending = approvals.filter(a => a.status==='pending');
+  const others = approvals.filter(a => a.status!=='pending');
+  let html = '';
+  if (pending.length) {
+    html += `<div style="margin-bottom:12px;font-size:12px;font-weight:600;color:var(--yellow)">⏳ Pending (${pending.length})</div>`;
+    html += pending.map(a => approvalCard(a)).join('');
+    if (others.length) html += `<div style="margin:16px 0 12px;font-size:12px;font-weight:600;color:var(--muted)">Resolved (${others.length})</div>`;
+  }
+  html += others.map(a => approvalCard(a, false)).join('');
+  document.getElementById('approvalsContent').innerHTML = html;
+}
+function approvalCard(a, withActions = true) {
+  const isPending = a.status === 'pending';
+  return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;">
+      <div>
+        <div style="font-weight:600;margin-bottom:4px">${esc(a.title||a.id)}</div>
+        ${a.description ? `<div style="font-size:12px;color:var(--muted)">${esc(a.description)}</div>` : ''}
+      </div>
+      <div style="flex-shrink:0">${statusBadge(a.status||'unknown')}</div>
+    </div>
+    <div style="display:flex;gap:16px;font-size:11px;color:var(--muted);margin-bottom:${isPending && withActions ? '12px' : '0'}">
+      <span>📅 ${relTime(a.createdAt)}</span>
+      <span>🤖 ${a.requestedByAgentId ? esc(agentMap[a.requestedByAgentId]?.name||a.requestedByAgentId) : a.requestedByUserId||'–'}</span>
+      ${a.approvalType ? `<span>Type: ${esc(a.approvalType)}</span>` : ''}
+    </div>
+    ${isPending && withActions ? `<div style="display:flex;gap:8px">
+      <button class="btn btn-success btn-sm" onclick="resolveApproval('${a.id}','approved')">✓ Approve</button>
+      <button class="btn btn-danger btn-sm" onclick="resolveApproval('${a.id}','rejected')">✗ Reject</button>
+    </div>` : ''}
+  </div>`;
+}
+
+// ─── Issue Detail ─────────────────────────────────────────────────────────────
+async function openIssueDetail(issueId) {
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('detailContent').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const [issue, comments] = await Promise.all([
+      api('/api/issues/'+issueId),
+      api('/api/issues/'+issueId+'/comments')
+    ]);
+    const cmts = Array.isArray(comments) ? comments : (comments.comments||[]);
+    const agent = agentMap[issue.assigneeAgentId];
+    document.getElementById('detailContent').innerHTML = `
+      <div style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="identifier">${esc(issue.identifier||'')}</span>
+          ${statusBadge(issue.status)}
+          <span class="priority-${issue.priority}" style="margin-left:auto">${issue.priority||''}</span>
+        </div>
+        <div style="font-size:17px;font-weight:600;margin-bottom:10px">${esc(issue.title)}</div>
+        ${issue.description && issue.description !== issue.title ? `<div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:12px">${esc(issue.description)}</div>` : ''}
+        <div style="font-size:12px;color:var(--muted)">
+          Assignee: ${agent ? `<strong style="color:var(--text)">${esc(agent.name)}</strong>` : 'Unassigned'} · Updated ${relTime(issue.updatedAt)}
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this,'dtab-update')">Update</div>
+        <div class="tab" onclick="switchTab(this,'dtab-comments')">Comments (${cmts.length})</div>
+      </div>
+      <div class="tab-panel active" id="dtab-update">
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="d-status">
+            ${['todo','backlog','in_progress','in_review','blocked','done','cancelled'].map(s => `<option value="${s}"${s===issue.status?' selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-select" id="d-priority">
+            ${['critical','high','medium','low'].map(p => `<option value="${p}"${p===issue.priority?' selected':''}>${p}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assign Agent</label>
+          <select class="form-select" id="d-agent">
+            <option value="">Unassigned</option>
+            ${cache.agents.map(a => `<option value="${a.id}"${a.id===issue.assigneeAgentId?' selected':''}>${esc(a.name)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Add Comment (optional)</label>
+          <textarea class="form-textarea" id="d-comment" placeholder="Comment on this update…" style="min-height:60px"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="updateIssue('${issueId}')">Save Changes</button>
+      </div>
+      <div class="tab-panel" id="dtab-comments">
+        <div style="margin-bottom:12px">
+          <button class="btn btn-sm" onclick="openComment('${issueId}')">+ Add Comment</button>
+        </div>
+        <div class="comment-thread">
+          ${cmts.length ? cmts.reverse().map(c => `
+            <div class="comment">
+              <div class="comment-header">
+                <strong>${esc(c.authorAgentId ? (agentMap[c.authorAgentId]?.name||c.authorAgentId) : c.authorUserId||'Unknown')}</strong>
+                <span>·</span><span>${relTime(c.createdAt)}</span>
+              </div>
+              <div class="comment-body">${esc(c.body||'')}</div>
+            </div>
+          `).join('') : '<div class="empty" style="padding:20px"><div class="empty-icon" style="font-size:20px">💬</div>No comments yet.</div>'}
+        </div>
+      </div>
+    `;
+  } catch(e) {
+    document.getElementById('detailContent').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>Failed to load: ${esc(e.message)}</div>`;
+  }
+}
+
+function closeDetail() { document.getElementById('detailPanel').classList.remove('open'); }
+function switchTab(el, panelId) {
+  el.closest('.tabs').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const container = el.closest('.tab-panel')?.parentNode || el.closest('.detail-panel');
+  container.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId)?.classList.add('active');
+}
+
+// ─── Render: Costs ────────────────────────────────────────────────────────────
+function renderCosts() {
+  const agents = cache.agents;
+  const totalSpent = agents.reduce((s, a) => s + (a.spentMonthlyCents||0), 0);
+  const totalBudget = agents.reduce((s, a) => s + (a.budgetMonthlyCents||0), 0);
+  const agentsWithBudget = agents.filter(a => a.budgetMonthlyCents > 0);
+  const overBudget = agentsWithBudget.filter(a => (a.spentMonthlyCents||0) > a.budgetMonthlyCents);
+  const pct = totalBudget ? Math.round(totalSpent/totalBudget*100) : 0;
+
+  document.getElementById('costsTotal').textContent = '$' + (totalSpent/100).toFixed(2) + ' spent';
+  document.getElementById('costCards').innerHTML = `
+    <div class="card"><div class="card-label">Total Spent (MTD)</div><div class="card-value" style="color:var(--accent2)">$${(totalSpent/100).toFixed(2)}</div><div class="card-sub">${agents.length} agents</div></div>
+    <div class="card"><div class="card-label">Total Budget</div><div class="card-value">${totalBudget ? '$'+(totalBudget/100).toFixed(0) : '∞'}</div><div class="card-sub">per month</div></div>
+    <div class="card"><div class="card-label">Budget Used</div><div class="card-value" style="color:${pct>80?'var(--red)':pct>50?'var(--yellow)':'var(--green)'}">${totalBudget ? pct+'%' : '–'}</div>
+      <div class="card-sub"><div class="progress-bar-wrap" style="margin-top:6px"><div class="progress-bar-fill" style="width:${Math.min(pct,100)}%;background:${pct>80?'var(--red)':pct>50?'var(--yellow)':'var(--accent)'}"></div></div></div>
+    </div>
+    <div class="card"><div class="card-label">Agents w/ Budget</div><div class="card-value">${agentsWithBudget.length}</div><div class="card-sub">${overBudget.length} over limit</div></div>
+    <div class="card"><div class="card-label">Avg Spend/Agent</div><div class="card-value">$${agents.length ? (totalSpent/agents.length/100).toFixed(2) : '0'}</div><div class="card-sub">this month</div></div>
+  `;
+
+  // Per-agent table sorted by spend
+  const sorted = [...agents].sort((a,b) => (b.spentMonthlyCents||0) - (a.spentMonthlyCents||0));
+  document.getElementById('costAgentTable').innerHTML = `
+    <table><thead><tr><th>Agent</th><th>Role</th><th>Spent (MTD)</th><th>Budget</th><th>Utilization</th></tr></thead>
+    <tbody>${sorted.map(a => {
+      const spent = a.spentMonthlyCents||0;
+      const budget = a.budgetMonthlyCents||0;
+      const u = budget ? Math.min(Math.round(spent/budget*100), 100) : null;
+      const barColor = u === null ? 'var(--muted)' : u > 80 ? 'var(--red)' : u > 50 ? 'var(--yellow)' : 'var(--green)';
+      return `<tr>
+        <td><div class="agent-chip"><div class="agent-av">${(a.name||'?')[0]}</div>${esc(a.name)}</div></td>
+        <td style="color:var(--muted);font-size:12px">${esc(a.role||'–')}</td>
+        <td style="font-weight:600;color:${spent>0?'var(--accent2)':'var(--muted)'}">${spent > 0 ? '$'+(spent/100).toFixed(4) : '–'}</td>
+        <td style="color:var(--muted)">${budget ? '$'+(budget/100).toFixed(0)+'/mo' : '∞'}</td>
+        <td style="min-width:140px">${u !== null ? `<div style="display:flex;align-items:center;gap:8px">
+          <div class="progress-bar-wrap" style="flex:1;height:6px"><div class="progress-bar-fill" style="width:${u}%;background:${barColor}"></div></div>
+          <span style="font-size:11px;color:${barColor};white-space:nowrap">${u}%</span>
+        </div>` : '<span style="color:var(--muted);font-size:11px">no limit</span>'}</td>
+      </tr>`;
+    }).join('')}</tbody></table>
+  `;
+
+  // Budget utilization bars (only agents with budgets)
+  if (!agentsWithBudget.length) {
+    document.getElementById('budgetBars').innerHTML = '<div class="empty" style="padding:24px"><div class="empty-icon">💰</div>No agents have budget limits set.</div>';
+    return;
+  }
+  document.getElementById('budgetBars').innerHTML = agentsWithBudget.map(a => {
+    const spent = a.spentMonthlyCents||0;
+    const budget = a.budgetMonthlyCents;
+    const u = Math.round(spent/budget*100);
+    const barColor = u > 80 ? 'var(--red)' : u > 50 ? 'var(--yellow)' : 'var(--accent)';
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:500;font-size:13px">${esc(a.name)}</div>
+        <div style="font-size:12px;color:var(--muted)">$${(spent/100).toFixed(4)} / $${(budget/100).toFixed(0)} <span style="color:${barColor};font-weight:600">(${u}%)</span></div>
+      </div>
+      <div class="progress-bar-wrap" style="height:8px"><div class="progress-bar-fill" style="width:${Math.min(u,100)}%;background:${barColor}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+async function createIssue() {
+  const title = document.getElementById('ci-title').value.trim();
+  if (!title) { toast('Title is required', 'error'); return; }
+  try {
+    await api('/api/companies/'+cfg.companyId+'/issues', { method: 'POST', body: JSON.stringify({
+      title,
+      description: document.getElementById('ci-desc').value.trim() || undefined,
+      status: document.getElementById('ci-status').value,
+      priority: document.getElementById('ci-priority').value,
+      assigneeAgentId: document.getElementById('ci-agent').value || undefined,
+      projectId: document.getElementById('ci-project').value || undefined,
+    }) });
+    closeModal('createIssueModal');
+    toast('Issue created!', 'success');
+    await loadIssues();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function updateIssue(issueId) {
+  try {
+    await api('/api/issues/'+issueId, { method: 'PATCH', body: JSON.stringify({
+      status: document.getElementById('d-status').value,
+      priority: document.getElementById('d-priority').value,
+      assigneeAgentId: document.getElementById('d-agent').value || null,
+      comment: document.getElementById('d-comment')?.value?.trim() || undefined,
+    }) });
+    toast('Issue updated!', 'success');
+    await loadIssues();
+    openIssueDetail(issueId);
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+function openComment(issueId) {
+  document.getElementById('cm-issueId').value = issueId;
+  document.getElementById('cm-body').value = '';
+  openModal('commentModal');
+}
+async function submitComment() {
+  const issueId = document.getElementById('cm-issueId').value;
+  const body = document.getElementById('cm-body').value.trim();
+  if (!body) { toast('Comment cannot be empty', 'error'); return; }
+  try {
+    await api('/api/issues/'+issueId+'/comments', { method: 'POST', body: JSON.stringify({ body }) });
+    closeModal('commentModal');
+    toast('Comment posted!', 'success');
+    if (document.getElementById('detailPanel').classList.contains('open')) openIssueDetail(issueId);
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function triggerHeartbeat(agentId, agentName) {
+  try {
+    await api('/api/agents/'+agentId+'/heartbeat', { method: 'POST', body: JSON.stringify({}) });
+    toast('Heartbeat triggered for ' + agentName, 'success');
+    setTimeout(() => loadRuns(), 1500);
+  } catch(e) {
+    // Try alternate endpoint
+    try {
+      await api('/api/companies/'+cfg.companyId+'/heartbeat', { method: 'POST', body: JSON.stringify({ agentId }) });
+      toast('Heartbeat triggered for ' + agentName, 'success');
+    } catch(e2) { toast('Heartbeat: ' + e.message, 'error'); }
+  }
+}
+
+function viewAgentRuns(agentId, agentName) {
+  showPage('runs');
+  document.getElementById('runsAgentFilter').value = agentId;
+  filterRuns();
+}
+
+async function pauseAgent(agentId) {
+  try {
+    await api('/api/agents/'+agentId, { method: 'PATCH', body: JSON.stringify({ status: 'paused', pauseReason: 'Paused via dashboard' }) });
+    toast('Agent paused', 'success');
+    await loadAgents();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+async function resumeAgent(agentId) {
+  try {
+    await api('/api/agents/'+agentId, { method: 'PATCH', body: JSON.stringify({ status: 'running', pauseReason: null }) });
+    toast('Agent resumed', 'success');
+    await loadAgents();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function resolveApproval(approvalId, resolution) {
+  try {
+    await api('/api/approvals/'+approvalId, { method: 'PATCH', body: JSON.stringify({ status: resolution }) });
+    toast('Approval ' + resolution, 'success');
+    await loadApprovals();
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+const pageTitles = { overview:'Dashboard', agents:'Agents', runs:'Runs', projects:'Projects', issues:'Issues', approvals:'Approvals', costs:'Cost Tracking' };
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  document.querySelectorAll('.nav-item[data-page]').forEach(el => el.classList.toggle('active', el.dataset.page===name));
+  document.getElementById('pageTitle').textContent = pageTitles[name]||name;
+}
+
+// ─── Modal ────────────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function esc(s) { if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function statusBadge(s) { const k = (s||'unknown').toLowerCase().replace(/[ -]/g,'_'); return `<span class="badge badge-${k}"><span class="badge-dot"></span>${k.replace(/_/g,' ')}</span>`; }
+function relTime(ts) { if(!ts) return '–'; const d=Date.now()-new Date(ts).getTime(); const s=Math.floor(d/1000); if(s<60) return s+'s ago'; const m=Math.floor(s/60); if(m<60) return m+'m ago'; const h=Math.floor(m/60); if(h<24) return h+'h ago'; return Math.floor(h/24)+'d ago'; }
+function toast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type==='error' ? ' error' : type==='success' ? ' success' : '');
+  clearTimeout(t._tid); t._tid = setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>

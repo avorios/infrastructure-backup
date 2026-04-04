@@ -1,0 +1,17 @@
+# Subscription Inventory
+# Status: draft — awaiting board input
+# Last updated: 2026-04-02
+
+subscriptions: []
+  # Template for each subscription:
+  # - name: "Netflix"
+  #   provider: "Netflix"
+  #   amount: 15.99
+  #   currency: USD
+  #   frequency: monthly  # monthly | annual
+  #   renewal_date: "2026-04-15"
+  #   category: "Entertainment"  # Entertainment | Productivity | Health | Education | Other
+  #   shared: false
+  #   auto_renew: true
+  #   cancel_url: ""
+  #   notes: ""

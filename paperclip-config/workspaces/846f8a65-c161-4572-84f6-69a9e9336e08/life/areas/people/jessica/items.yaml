@@ -1,0 +1,13 @@
+facts:
+  - id: jessica-001
+    claim: "Jessica is the board member's girlfriend"
+    source: "PER-2 task description"
+    confidence: 1.0
+    created: "2026-04-02"
+    status: active
+  - id: jessica-002
+    claim: "Boyfriend agent group being built to manage relationship logistics for Jessica and board member"
+    source: "PER-2 task description"
+    confidence: 1.0
+    created: "2026-04-02"
+    status: active

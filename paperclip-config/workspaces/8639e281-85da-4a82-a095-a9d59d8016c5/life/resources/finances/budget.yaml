@@ -1,0 +1,73 @@
+# Monthly Budget Template
+# Status: draft — awaiting board input
+# Last updated: 2026-04-02
+
+month: "2026-04"
+currency: USD
+
+categories:
+  - name: Housing
+    budgeted: null  # [TBD] rent/mortgage, utilities, maintenance
+    spent: 0
+    notes: ""
+
+  - name: Food & Groceries
+    budgeted: null  # [TBD]
+    spent: 0
+    notes: ""
+
+  - name: Transportation
+    budgeted: null  # [TBD] car payment, gas, transit, parking
+    spent: 0
+    notes: ""
+
+  - name: Education
+    budgeted: null  # [TBD] tuition, school supplies, tutoring
+    spent: 0
+    notes: ""
+
+  - name: Childcare
+    budgeted: null  # [TBD] daycare, babysitting, activities
+    spent: 0
+    notes: ""
+
+  - name: Healthcare
+    budgeted: null  # [TBD] insurance premiums, copays, prescriptions
+    spent: 0
+    notes: ""
+
+  - name: Insurance
+    budgeted: null  # [TBD] life, auto, home, umbrella
+    spent: 0
+    notes: ""
+
+  - name: Entertainment & Leisure
+    budgeted: null  # [TBD]
+    spent: 0
+    notes: ""
+
+  - name: Personal Care
+    budgeted: null  # [TBD]
+    spent: 0
+    notes: ""
+
+  - name: Gifts & Donations
+    budgeted: null  # [TBD]
+    spent: 0
+    notes: ""
+
+  - name: Savings & Investments
+    budgeted: null  # [TBD]
+    spent: 0
+    notes: ""
+
+  - name: Miscellaneous
+    budgeted: null  # [TBD]
+    spent: 0
+    notes: ""
+
+totals:
+  income: null  # [TBD]
+  budgeted: null
+  spent: 0
+  remaining: null

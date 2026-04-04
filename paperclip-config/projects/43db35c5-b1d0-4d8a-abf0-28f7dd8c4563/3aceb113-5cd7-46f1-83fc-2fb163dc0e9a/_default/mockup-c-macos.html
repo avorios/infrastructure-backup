@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITCO Dashboard — Option C: macOS Native</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #1c1c1e;
+      --sidebar: rgba(44,44,46,0.92);
+      --surface: rgba(58,58,60,0.7);
+      --surface-hover: rgba(72,72,74,0.8);
+      --border: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.14);
+      --text: #ffffff;
+      --text-secondary: rgba(255,255,255,0.55);
+      --text-tertiary: rgba(255,255,255,0.28);
+      --accent: #0a84ff;
+      --accent-green: #30d158;
+      --accent-amber: #ff9f0a;
+      --accent-red: #ff453a;
+      --accent-purple: #bf5af2;
+      --accent-cyan: #5ac8fa;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, 'SF Pro Display', 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      width: 1440px;
+      height: 900px;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle background texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 900px 500px at 30% 20%, rgba(10,132,255,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 400px at 80% 70%, rgba(191,90,242,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* macOS window chrome */
+    .window-chrome {
+      height: 38px;
+      background: rgba(40,40,42,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+    }
+
+    .traffic-lights {
+      display: flex;
+      gap: 7px;
+      margin-right: 4px;
+    }
+
+    .tl {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .tl-red { background: #ff5f57; }
+    .tl-yellow { background: #febc2e; }
+    .tl-green { background: #28c840; }
+
+    .window-title {
+      flex: 1;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: -0.01em;
+    }
+
+    .window-controls-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .wc-icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    /* Main layout: sidebar + content */
+    .app-layout {
+      display: flex;
+      height: calc(900px - 38px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--sidebar);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px 0 12px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 16px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0a84ff, #5ac8fa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .sidebar-section {
+      margin-bottom: 6px;
+    }
+
+    .sidebar-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 8px 16px 4px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
+      margin: 0 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .sidebar-item:hover { background: rgba(255,255,255,0.06); }
+    .sidebar-item.active { background: var(--accent); }
+    .sidebar-item.active .si-label { color: #fff; }
+    .sidebar-item.active .si-icon { opacity: 1; }
+
+    .si-icon {
+      font-size: 15px;
+      opacity: 0.6;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-item.active .si-icon { opacity: 1; }
+
+    .si-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .si-badge {
+      margin-left: auto;
+      background: rgba(255,255,255,0.12);
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-item.active .si-badge {
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      height: 44px;
+      background: rgba(40,40,42,0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
+    }
+
+    .toolbar-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .toolbar-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--border-strong);
+    }
+
+    .toolbar-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .ts-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .toolbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tb-time {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tb-pill {
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tb-pill.live {
+      background: rgba(48,209,88,0.15);
+      color: var(--accent-green);
+    }
+
+    /* Content area */
+    .content-area {
+      flex: 1;
+      padding: 16px 20px;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 14px;
+    }
+
+    /* KPI row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      position: relative;
+    }
+
+    .kpi-icon-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .kpi-sf-icon {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    .kpi-change {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    .kc-up { background: rgba(48,209,88,0.15); color: var(--accent-green); }
+    .kc-warn { background: rgba(255,159,10,0.15); color: var(--accent-amber); }
+
+    .kpi-number {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    /* Bottom section: agents + activity */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    /* Agents card */
+    .agents-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.08);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .agents-list {
+      flex: 1;
+      overflow: hidden;
+      padding: 8px 10px;
+    }
+
+    .ag-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 2px;
+      transition: background 0.12s;
+    }
+
+    .ag-row:hover { background: rgba(255,255,255,0.05); }
+
+    .av-wrap { position: relative; }
+
+    .av {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .av-status {
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid #2c2c2e;
+    }
+    .avs-running { background: var(--accent); box-shadow: 0 0 6px rgba(10,132,255,0.6); }
+    .avs-idle { background: var(--accent-green); }
+    .avs-blocked { background: var(--accent-amber); }
+
+    .ag-info { flex: 1; min-width: 0; }
+
+    .ag-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ag-task {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ag-status {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+    }
+
+    .ags-running { color: var(--accent); background: rgba(10,132,255,0.12); }
+    .ags-idle { color: var(--accent-green); background: rgba(48,209,88,0.10); }
+    .ags-blocked { color: var(--accent-amber); background: rgba(255,159,10,0.12); }
+
+    /* Activity card */
+    .activity-card {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .act-list { flex: 1; overflow: hidden; padding: 8px 10px; }
+
+    .act-row {
+      display: flex;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      transition: background 0.12s;
+    }
+
+    .act-row:hover { background: rgba(255,255,255,0.04); }
+
+    .act-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .act-body { flex: 1; min-width: 0; }
+
+    .act-msg {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .act-msg strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .act-ts {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* Label */
+    .corner-label {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <!-- macOS Window Chrome -->
+  <div class="window-chrome">
+    <div class="traffic-lights">
+      <div class="tl tl-red"></div>
+      <div class="tl tl-yellow"></div>
+      <div class="tl tl-green"></div>
+    </div>
+    <div class="window-title">HITCO AI Workforce Dashboard</div>
+    <div class="window-controls-right">
+      <div class="wc-icon">⊞</div>
+      <div class="wc-icon">⛶</div>
+    </div>
+  </div>
+
+  <!-- App Layout -->
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">IR</div>
+        <div>
+          <div class="logo-text">HITCO</div>
+          <div class="logo-sub">AI Workforce</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspace</div>
+        <div class="sidebar-item active">
+          <div class="si-icon">⊡</div>
+          <div class="si-label">Dashboard</div>
+        </div>
+        <div class="sidebar-item">
+          <div class="si-icon">◎</div>
+          <div class="si-label">Agents</div>
+          <div class="si-badge">8</div>
+        </div>
+        <div class="sidebar-item">
+          <div class="si-icon">✓</div>
+          <div class="si-label">Issues</div>
+          <div class="si-badge">24</div>
+        </div>
+        <div class="sidebar-item">
+          <div class="si-icon">◷</div>
+          <div class="si-label">Activity</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Projects</div>
+        <div class="sidebar-item">
+          <div class="si-icon">◈</div>
+          <div class="si-label">Feature Dev</div>
+          <div class="si-badge">12</div>
+        </div>
+        <div class="sidebar-item">
+          <div class="si-icon">◉</div>
+          <div class="si-label">Dashboard</div>
+          <div class="si-badge">8</div>
+        </div>
+        <div class="sidebar-item">
+          <div class="si-icon">◑</div>
+          <div class="si-label">Infrastructure</div>
+          <div class="si-badge">4</div>
+        </div>
+      </div>
+
+      <div style="margin-top:auto; padding: 8px 16px 4px; border-top: 1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#0a84ff,#5ac8fa);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;">IV</div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text);">Ivory Robinson</div>
+            <div style="font-size:10px;color:var(--text-secondary);">Admin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <span class="toolbar-title">Dashboard</span>
+        <div class="toolbar-sep"></div>
+        <div class="toolbar-stat">
+          <div class="ts-dot" style="background:var(--accent);box-shadow:0 0 5px rgba(10,132,255,0.6);"></div>
+          5 running
+        </div>
+        <div class="toolbar-stat">
+          <div class="ts-dot" style="background:var(--accent-green);"></div>
+          3 idle
+        </div>
+        <div class="toolbar-stat">
+          <div class="ts-dot" style="background:var(--accent-amber);"></div>
+          2 blocked
+        </div>
+        <div class="toolbar-right">
+          <span class="tb-time">Mon 21:02</span>
+          <div class="tb-pill live">
+            <div style="width:5px;height:5px;border-radius:50%;background:var(--accent-green);"></div>
+            Live
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content-area">
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-icon-row">
+              <span class="kpi-sf-icon">🤖</span>
+              <span class="kpi-change kc-up">+1</span>
+            </div>
+            <div class="kpi-number" style="color:var(--accent);">8</div>
+            <div class="kpi-label">Total Agents</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon-row">
+              <span class="kpi-sf-icon">⚡</span>
+            </div>
+            <div class="kpi-number" style="color:var(--accent);">5</div>
+            <div class="kpi-label">Running</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon-row">
+              <span class="kpi-sf-icon">✓</span>
+              <span class="kpi-change kc-up">↑12%</span>
+            </div>
+            <div class="kpi-number" style="color:var(--accent-green);">142</div>
+            <div class="kpi-label">Done Today</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon-row">
+              <span class="kpi-sf-icon">⚠</span>
+              <span class="kpi-change kc-warn">Review</span>
+            </div>
+            <div class="kpi-number" style="color:var(--accent-amber);">2</div>
+            <div class="kpi-label">Blocked</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon-row">
+              <span class="kpi-sf-icon">◑</span>
+              <span class="kpi-change kc-up">↑3%</span>
+            </div>
+            <div class="kpi-number" style="color:var(--accent-cyan);">87%</div>
+            <div class="kpi-label">Efficiency</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon-row">
+              <span class="kpi-sf-icon">$</span>
+            </div>
+            <div class="kpi-number" style="color:var(--accent-purple);">$4.20</div>
+            <div class="kpi-label">Daily Cost</div>
+          </div>
+        </div>
+
+        <!-- Bottom Grid -->
+        <div class="bottom-grid">
+          <!-- Agents -->
+          <div class="agents-card">
+            <div class="card-header">
+              <span class="card-title">Agents</span>
+              <span class="card-badge">8 total</span>
+            </div>
+            <div class="agents-list">
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#0a84ff,#5ac8fa);">CD</div>
+                  <div class="av-status avs-running"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">Claude Coder</div>
+                  <div class="ag-task">Implementing auth middleware</div>
+                </div>
+                <div class="ag-status ags-running">Running</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#30d158,#34d399);">PM</div>
+                  <div class="av-status avs-running"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">Product Manager</div>
+                  <div class="ag-task">Reviewing sprint backlog</div>
+                </div>
+                <div class="ag-status ags-running">Running</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#636366,#48484a);">FD</div>
+                  <div class="av-status avs-idle"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">Frontend Dev</div>
+                  <div class="ag-task">Idle — awaiting task</div>
+                </div>
+                <div class="ag-status ags-idle">Idle</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#ff9f0a,#ff6b00);">CT</div>
+                  <div class="av-status avs-blocked"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">CTO Advisor</div>
+                  <div class="ag-task">Blocked: waiting on spec</div>
+                </div>
+                <div class="ag-status ags-blocked">Blocked</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#bf5af2,#9b59b6);">QA</div>
+                  <div class="av-status avs-running"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">QA Engineer</div>
+                  <div class="ag-task">Running test suite DAS-38</div>
+                </div>
+                <div class="ag-status ags-running">Running</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#ff453a,#c0392b);">BE</div>
+                  <div class="av-status avs-running"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">Backend Dev</div>
+                  <div class="ag-task">Optimizing DB queries</div>
+                </div>
+                <div class="ag-status ags-running">Running</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#5ac8fa,#0a84ff);">DX</div>
+                  <div class="av-status avs-idle"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">DevOps</div>
+                  <div class="ag-task">Idle</div>
+                </div>
+                <div class="ag-status ags-idle">Idle</div>
+              </div>
+              <div class="ag-row">
+                <div class="av-wrap">
+                  <div class="av" style="background:linear-gradient(135deg,#ff9f0a,#ffcc02);">CE</div>
+                  <div class="av-status avs-running"></div>
+                </div>
+                <div class="ag-info">
+                  <div class="ag-name">CEO Agent</div>
+                  <div class="ag-task">Assigning weekly goals</div>
+                </div>
+                <div class="ag-status ags-running">Running</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity -->
+          <div class="activity-card">
+            <div class="card-header">
+              <span class="card-title">Recent Activity</span>
+              <span class="card-badge" style="color:var(--accent-green);">Live</span>
+            </div>
+            <div class="act-list">
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(48,209,88,0.12);">✓</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>Claude Coder</strong> completed DAS-39</div>
+                  <div class="act-ts">2 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(10,132,255,0.12);">+</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>Product Manager</strong> created 3 issues</div>
+                  <div class="act-ts">7 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(255,159,10,0.12);">⚠</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>CTO Advisor</strong> blocked on DAS-37</div>
+                  <div class="act-ts">12 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(191,90,242,0.12);">▶</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>QA Engineer</strong> started regression suite</div>
+                  <div class="act-ts">18 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(48,209,88,0.12);">↑</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>Backend Dev</strong> merged PR #88</div>
+                  <div class="act-ts">25 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(10,132,255,0.12);">◎</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>CEO Agent</strong> assigned Q2 milestones</div>
+                  <div class="act-ts">31 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(90,200,250,0.12);">⬆</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>Frontend Dev</strong> deployed mockups</div>
+                  <div class="act-ts">45 min ago</div>
+                </div>
+              </div>
+              <div class="act-row">
+                <div class="act-icon" style="background:rgba(48,209,88,0.12);">✓</div>
+                <div class="act-body">
+                  <div class="act-msg"><strong>DevOps</strong> CI health check — all green</div>
+                  <div class="act-ts">1 hr ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="corner-label">Option C — macOS Native</div>
+</body>
+</html>

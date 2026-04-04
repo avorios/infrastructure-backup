@@ -1,0 +1,41 @@
+- id: summer2026-001
+  fact: "Summer 2026 trip research completed for 5 bucket-list destinations"
+  source: "PER-11 research"
+  date: "2026-04-03"
+  status: active
+
+- id: summer2026-002
+  fact: "Mykonos + Calilo Greek combo is top recommendation ($10k-16k for two, 8 nights)"
+  source: "PER-11 research"
+  date: "2026-04-03"
+  status: active
+
+- id: summer2026-003
+  fact: "Giraffe Manor Kenya requires 8-12 months advance booking for peak season (June-Oct)"
+  source: "web research"
+  date: "2026-04-03"
+  status: active
+
+- id: summer2026-004
+  fact: "Calilo hotel Ios Greece ~$800-1500+/night peak summer, 5-star luxury with private beach"
+  source: "web research"
+  date: "2026-04-03"
+  status: active
+
+- id: summer2026-005
+  fact: "Delta flies JFK to ATH direct, connect to Mykonos (JMK) — preferred routing"
+  source: "web research"
+  date: "2026-04-03"
+  status: active
+
+- id: summer2026-006
+  fact: "Seychelles deprioritized due to 28+ hour travel time from NYC"
+  source: "PER-11 analysis"
+  date: "2026-04-03"
+  status: active
+
+- id: summer2026-007
+  fact: "Bosco (Presidential Mushroom) needs clarification — could be Bosco Verticale Milan or Alberobello trulli"
+  source: "PER-11 research"
+  date: "2026-04-03"
+  status: active

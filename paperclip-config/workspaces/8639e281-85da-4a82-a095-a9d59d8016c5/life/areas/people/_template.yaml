@@ -1,0 +1,24 @@
+name: ""
+relationship: ""  # family | friend | professional | mentor | other
+category: ""  # inner-circle | close | acquaintance
+birthday: ""
+anniversary: ""
+contact:
+  phone: ""
+  email: ""
+  preferred_method: ""  # text | call | email | in-person
+address: ""
+notes:
+  interests: []
+  conversation_topics: []
+  dietary_preferences: ""
+  important_context: ""
+gifts:
+  preferences: []
+  history: []
+touchpoints:
+  last_contact: ""
+  frequency_goal: ""  # weekly | biweekly | monthly | quarterly
+  next_reminder: ""
+  history: []
+kids: []

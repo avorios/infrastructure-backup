@@ -1,0 +1,222 @@
+# Paperclip Database - Complete Issue/Ticket Report
+## Generated: 2026-04-03
+
+### PERSONAL WORKSPACE ISSUES (PER prefix)
+
+#### PER-1: Hire a Personal Assistant Agent
+- Status: in_progress
+- Description: Initial personal assistant agent hire
+- Created Date: Circa 2026-04-01
+- Company: Personal Workspace
+- Notes: Had active queued run on 2026-04-02
+
+#### PER-2: Boyfriend Agent - Relationship Management for Jessica
+- Status: completed/closed
+- Description: Build an agent group for relationship logistics with girlfriend Jessica. Covers Resy reservations, vacation planning, date planning, birthday/holiday planning
+- Assigned To: CEO (then delegated through workflow)
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Related Tasks:
+  - Created onboarding questionnaire covering 7 domains
+  - Processed board answers and designed architecture
+  - Hired 3 specialist agents
+  - Created initial tasks for specialists
+- Closed: 2026-04-03 with summary handed to board
+
+#### PER-3: Personal Knowledge Base (PARA System)
+- Status: blocked/awaiting board input
+- Description: Set up PARA (Projects, Areas, Resources, Archive) memory structure
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Details: Initialized directory structure, created index.md and daily notes template
+- Blocker: Awaiting board input on personal information
+
+#### PER-4: Weekly Routine System
+- Status: blocked/awaiting board input
+- Description: Create weekly routine template with recurring time blocks
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Details: 10 recurring time blocks (morning/evening routines, kids activities, meal planning, financial check-in, relationship touchpoints, exercise, personal admin, family time, weekly review)
+- Blocker: All slots marked TBD pending board customization
+
+#### PER-5: Financial Dashboard
+- Status: blocked/awaiting board input
+- Description: Build financial management system
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Details: Files: budget.yaml, bills.yaml, savings-goals.yaml, subscriptions.yaml. 12 budget categories
+- Blocker: All values TBD pending board input on actual figures
+
+#### PER-6: Relationship CRM
+- Status: blocked/awaiting board input
+- Description: Build relationship contact management system
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Details: YAML profiles with contact info, birthdays, gifts, touchpoints, reminders
+- Blocker: Awaiting board input on inner circle contacts
+
+#### PER-7: Family Calendar System
+- Status: blocked/awaiting board input
+- Description: Create family calendar and schedule management
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Details: 5 YAML files (school.yaml, activities.yaml, medical.yaml, family-events.yaml, travel.yaml)
+- Blocker: All files empty pending board input on family commitments
+
+#### PER-8: Hire and Onboard Boyfriend Agent Group (3 Specialist Agents)
+- Status: completed
+- Description: Hire and onboard 3 specialist agents for relationship management
+- Assigned To: Executive Assistant
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Specialists Hired:
+  1. Date Night Planner
+  2. Occasions Manager  
+  3. Vacation Planner
+- Approval Process: Blocked initially due to missing permissions, escalated to CEO, approved by board ~00:00 on 2026-04-02
+- Completed: 2026-04-02 23:51
+- Onboarding Tasks: Created initial tasks PER-12, PER-13, PER-14
+
+#### PER-9: Plan Next Date Night
+- Status: completed
+- Description: Plan next date night for Ivory & Jessica
+- Assigned To: Date Night Planner
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Deliverable: 3 date night options posted
+- Option 1: Knicks game + Brooklyn Chop House
+- Option 2: Crevette + The Garret
+- Option 3: Additional option (Brooklyn Chop House + Apotheke)
+- Details: Research included steakhouse, fusion dining, Mediterranean restaurants in Brooklyn/FiDi
+- Completed: 2026-04-03
+
+#### PER-10: 90-Day Occasion Audit
+- Status: blocked/in_progress
+- Description: Audit next 90 days and create reminder system for occasions
+- Assigned To: Occasions Manager
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Progress: 90-day audit complete, identified 4 key occasions needing board input:
+  - Easter (this weekend)
+  - Mother's Day
+  - Father's Day  
+  - New Year's Eve logistics
+- Blocker: Awaiting board input on: Easter celebration, Mother/Father Day plans, gift budget, NYE logistics
+
+#### PER-11: Summer 2026 Bucket List Trip Research
+- Status: completed
+- Description: Research all 5 bucket-list destinations for summer 2026
+- Assigned To: Vacation Planner
+- Created Date: 2026-04-02
+- Company: Personal Workspace
+- Destinations Researched:
+  1. Bosco (Presidential Mushroom) - needs clarification
+  2. Calilo (Greece)
+  3. Seychelles
+  4. Giraffe Manor (Kenya)
+  5. Mykonos
+- Recommendation Ranked:
+  1. Mykonos + Calilo combo - best overall value and experience
+  2. Mykonos solo - best value
+  3. Giraffe Manor + safari - premium/once-in-a-lifetime
+- Completed: 2026-04-03
+- Next Steps: Awaiting destination selection to build detailed itinerary
+
+#### PER-12: Plan Next Date Night (Date Night Planner version)
+- Status: completed
+- Description: Plan next date night for Ivory & Jessica (assigned to specialist agent)
+- Assigned To: Date Night Planner
+- Created Date: 2026-04-02 ~00:00
+- Company: Personal Workspace
+- Deliverable Options:
+  - Brooklyn Chop House (FiDi) - Asian-fusion steakhouse, Resy available, $125-150/pp
+  - Hillstone (Park Ave S) - New American, hard reservations, $75-120/pp
+  - Crevette (West Village) - Resy Top 10 2025, coastal Mediterranean, $100-140/pp
+  - Confidant (Brooklyn Heights) - New American, $100-150/pp
+  - Final Options: Brooklyn Chop House + Apotheke, Crevette + The Garret
+- Completed: 2026-04-03
+
+#### PER-13: Occasions Manager Initial Task
+- Status: in_progress
+- Description: Audit next 90 days + reminders (assigned to Occasions Manager specialist)
+- Assigned To: Occasions Manager
+- Created Date: 2026-04-02 ~00:00
+- Company: Personal Workspace
+- Note: Similar scope to PER-10
+
+#### PER-14: Vacation Planner Initial Task
+- Status: completed
+- Description: Research summer 2026 bucket-list trip (assigned to Vacation Planner specialist)
+- Assigned To: Vacation Planner
+- Created Date: 2026-04-02 ~00:00
+- Company: Personal Workspace
+- Note: Same deliverable as PER-11
+
+---
+
+### HITCO COMPANY ISSUES (Referenced in Agent Instructions)
+
+#### Issue Tracking System
+The HITCO company uses issues organized by project:
+1. **E-Rate Bidding Project** - E-Rate 470 application bids and proposals
+2. **Sales & Marketing Project** - Lead management and CRM
+3. **MSP Ops Project** - Managed service provider operations
+4. **SOC Ops Project** - Security operations center
+5. **IT Consulting Project** - IT consulting services
+
+#### Key Agent Roles Monitoring Issues
+- Executive Assistant: Scans all open issues daily, identifies blocked/stale items
+- 470 Retriever: Checks assigned issues for new 470 retrieval tasks
+- 470 Analyst: Analyzes assigned 470 applications
+- Bid Engineer: Creates bids from approved opportunities
+- Proposal Assembler: Assembles proposals for bids  
+- Brief Writer: Creates sales briefs from approved opportunities
+- CRM Operator: Completes CRM records from briefs
+- CSO: Reports E-Rate pipeline status to CEO
+
+#### Issue Workflow
+- Issues assigned to agents
+- Agents update status via issue comments
+- Hand-offs between agents via issue comments
+- Status reported to CEO by Executive Assistant
+
+**Note**: No specific HITCO issue IDs found in the file system. Issues appear to be stored in the embedded PostgreSQL database and accessed via the Paperclip API/UI.
+
+---
+
+### SUMMARY STATISTICS
+
+**Total Issues Found: 14**
+
+By Status:
+- Completed: 5 (PER-1, PER-2, PER-8, PER-9, PER-11, PER-12, PER-14)
+- In Progress: 2 (PER-10, PER-13)
+- Blocked/Awaiting Input: 5 (PER-3, PER-4, PER-5, PER-6, PER-7)
+
+By Company:
+- Personal Workspace: 14
+- HITCO: Unknown (stored in PostgreSQL, not in file system)
+
+By Type:
+- Personal/Relationship Management: 10
+- Workspace Infrastructure: 4
+
+---
+
+### STORAGE LOCATION NOTES
+
+**Personal Issues Source**: 
+- File Path: `/sessions/nice-elegant-babbage/mnt/hitco-workspace/.paperclip/instances/default/workspaces/*/memory/*.md`
+- Format: Markdown memory files in agent workspace directories
+
+**HITCO Issues Source**:
+- Database: Embedded PostgreSQL 
+- Path: `/sessions/nice-elegant-babbage/mnt/hitco-workspace/.paperclip/instances/default/db/`
+- Access: Via Paperclip API (not directly accessible from filesystem)
+
+**Configuration**:
+- Database Mode: embedded-postgres
+- Port: 54329
+- Storage Provider: local_disk
+- Storage Path: `/Users/ivoryrobinson/.paperclip/instances/default/data/storage`
+

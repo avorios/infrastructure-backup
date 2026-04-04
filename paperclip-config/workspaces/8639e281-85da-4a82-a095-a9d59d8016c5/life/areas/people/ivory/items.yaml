@@ -1,0 +1,41 @@
+- id: ivory-birthday
+  fact: "Ivory's birthday is January 23"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: ivory-location
+  fact: "Ivory is based in NYC (Manhattan/Brooklyn)"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: ivory-resy
+  fact: "Ivory's Resy account email is ivoryworldwide@gmail.com"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: ivory-calendar
+  fact: "Ivory uses Apple Calendar for scheduling"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: ivory-sports
+  fact: "Ivory follows Buffalo Bills (NFL) and NY Knicks (NBA)"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: ivory-activities
+  fact: "Ivory enjoys concerts, boxing, movies, sports, museums. Does NOT like hiking."
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: ivory-passport
+  fact: "Ivory has a US passport"
+  source: PER-8
+  created: 2026-04-02
+  status: active

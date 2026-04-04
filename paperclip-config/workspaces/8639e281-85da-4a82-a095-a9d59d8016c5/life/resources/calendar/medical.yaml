@@ -1,0 +1,11 @@
+# Medical Appointments -- Atomic Facts
+# Doctor, dentist, vision, specialist visits, vaccination schedules
+# Status: scheduled | completed | cancelled
+
+# Awaiting board input:
+# - Family members and their doctors/dentists
+# - Any upcoming appointments
+# - Annual checkup schedule (when are they typically due?)
+# - Allergies or ongoing treatments to track
+
+[]

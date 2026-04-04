@@ -1,0 +1,29 @@
+- id: jessica-birthday
+  fact: "Jessica's birthday is November 23"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: jessica-relationship
+  fact: "Jessica is Ivory's girlfriend"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: jessica-anniversary
+  fact: "Ivory and Jessica's anniversary is February 24"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: jessica-interests
+  fact: "Jessica's interests: clothes, KITH, sneakers"
+  source: PER-8
+  created: 2026-04-02
+  status: active
+
+- id: jessica-privacy
+  fact: "Jessica should NOT see or know about the agents. All work must be behind the scenes."
+  source: PER-8
+  created: 2026-04-02
+  status: active

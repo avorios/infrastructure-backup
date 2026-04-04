@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HITCO Workforce Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      line-height: 1.5;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    header .status-badge {
+      font-size: 0.8rem;
+      background: #16a34a;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1a1a2e;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title .count {
+      background: #e0e7ff;
+      color: #4338ca;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Agent Roster */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .agent-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+      transition: box-shadow 0.2s;
+    }
+
+    .agent-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .agent-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .agent-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .agent-role {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .agent-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    .agent-status .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .status-running .dot { background: #16a34a; }
+    .status-running { background: #dcfce7; color: #15803d; }
+    .status-idle .dot { background: #9ca3af; }
+    .status-idle { background: #f3f4f6; color: #6b7280; }
+    .status-paused .dot { background: #f59e0b; }
+    .status-paused { background: #fef3c7; color: #b45309; }
+
+    .agent-meta {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    /* Task Board */
+    .task-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .task-board { grid-template-columns: 1fr; }
+    }
+
+    .task-column {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+      min-height: 200px;
+    }
+
+    .column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #f0f2f5;
+    }
+
+    .column-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .column-count {
+      font-size: 0.75rem;
+      background: #f0f2f5;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+      color: #6b7280;
+    }
+
+    .col-todo .column-header { border-bottom-color: #93c5fd; }
+    .col-in-progress .column-header { border-bottom-color: #fbbf24; }
+    .col-done .column-header { border-bottom-color: #86efac; }
+
+    .task-card {
+      background: #fafafa;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 0.85rem;
+      margin-bottom: 0.65rem;
+      cursor: default;
+      transition: background 0.15s;
+    }
+
+    .task-card:hover {
+      background: #f0f2f5;
+    }
+
+    .task-title {
+      font-weight: 500;
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .task-id {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: #a5b4fc;
+      font-weight: 600;
+    }
+
+    .priority-badge {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .priority-critical { background: #fee2e2; color: #dc2626; }
+    .priority-high { background: #ffedd5; color: #ea580c; }
+    .priority-medium { background: #fef3c7; color: #b45309; }
+    .priority-low { background: #f0f2f5; color: #6b7280; }
+
+    .task-assignee {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.35rem;
+    }
+
+    /* Loading / Error */
+    .loading-msg {
+      text-align: center;
+      padding: 2rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+
+    .error-banner {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .refresh-btn {
+      background: #4338ca;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .refresh-btn:hover { background: #3730a3; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>HITCO Workforce Dashboard</h1>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <button class="refresh-btn" onclick="loadAll()">Refresh</button>
+      <span class="status-badge" id="connStatus">Live</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="error-banner" id="errorBanner"></div>
+
+    <div class="section-title">
+      Agents <span class="count" id="agentCount">0</span>
+    </div>
+    <div class="agent-grid" id="agentGrid">
+      <div class="loading-msg">Loading agents...</div>
+    </div>
+
+    <div class="section-title">
+      Task Board <span class="count" id="taskCount">0</span>
+    </div>
+    <div class="task-board">
+      <div class="task-column col-todo">
+        <div class="column-header">
+          <span class="column-title">To Do</span>
+          <span class="column-count" id="todoCount">0</span>
+        </div>
+        <div id="todoTasks"></div>
+      </div>
+      <div class="task-column col-in-progress">
+        <div class="column-header">
+          <span class="column-title">In Progress</span>
+          <span class="column-count" id="inProgressCount">0</span>
+        </div>
+        <div id="inProgressTasks"></div>
+      </div>
+      <div class="task-column col-done">
+        <div class="column-header">
+          <span class="column-title">Done</span>
+          <span class="column-count" id="doneCount">0</span>
+        </div>
+        <div id="doneTasks"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Configuration ---
+    const API_BASE = window.location.origin;
+    const ENDPOINTS = {
+      agents: '/api/agents',
+      tasks: '/api/tasks'
+    };
+
+    // --- Mock Data (used when API is unavailable) ---
+    const MOCK_AGENTS = [
+      { id: '1', name: 'Project Manager', role: 'ceo', status: 'running', icon: 'crown', capabilities: 'Hiring, planning, coordination' },
+      { id: '2', name: 'Frontend Developer', role: 'engineer', status: 'running', icon: 'sparkles', capabilities: 'UI, HTML, CSS, JavaScript' },
+      { id: '3', name: 'Backend Developer', role: 'engineer', status: 'running', icon: 'cog', capabilities: 'Node.js, APIs, databases' },
+      { id: '4', name: 'Technical Writer', role: 'engineer', status: 'idle', icon: 'pencil', capabilities: 'Documentation, API docs' }
+    ];
+
+    const MOCK_TASKS = [
+      { id: 'HIT-1', title: 'Hire your first engineer and create a hiring plan', status: 'done', priority: 'medium', assignee: 'Project Manager' },
+      { id: 'HIT-2', title: 'Scaffold Node.js server with core workforce management API', status: 'in_progress', priority: 'high', assignee: 'Backend Developer' },
+      { id: 'HIT-3', title: 'Build workforce dashboard UI', status: 'in_progress', priority: 'high', assignee: 'Frontend Developer' },
+      { id: 'HIT-4', title: 'Draft initial API documentation', status: 'in_progress', priority: 'medium', assignee: 'Technical Writer' }
+    ];
+
+    // --- Icon map ---
+    const ICONS = {
+      crown: { emoji: '\uD83D\uDC51', bg: '#fef3c7' },
+      sparkles: { emoji: '\u2728', bg: '#ede9fe' },
+      cog: { emoji: '\u2699\uFE0F', bg: '#dbeafe' },
+      pencil: { emoji: '\u270F\uFE0F', bg: '#fce7f3' },
+      default: { emoji: '\uD83E\uDD16', bg: '#e0e7ff' }
+    };
+
+    // --- Rendering ---
+    function renderAgents(agents) {
+      const grid = document.getElementById('agentGrid');
+      document.getElementById('agentCount').textContent = agents.length;
+
+      if (!agents.length) {
+        grid.innerHTML = '<div class="loading-msg">No agents found</div>';
+        return;
+      }
+
+      grid.innerHTML = agents.map(agent => {
+        const icon = ICONS[agent.icon] || ICONS.default;
+        const statusClass = 'status-' + (agent.status || 'idle');
+        return `
+          <div class="agent-card">
+            <div class="agent-header">
+              <div class="agent-icon" style="background: ${icon.bg}">${icon.emoji}</div>
+              <div>
+                <div class="agent-name">${esc(agent.name)}</div>
+                <div class="agent-role">${esc(agent.role || agent.title || '')}</div>
+              </div>
+            </div>
+            <span class="agent-status ${statusClass}">
+              <span class="dot"></span>
+              ${esc(agent.status || 'idle')}
+            </span>
+            ${agent.capabilities ? `<div class="agent-meta">${esc(agent.capabilities)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTasks(tasks) {
+      const buckets = { todo: [], in_progress: [], done: [] };
+
+      tasks.forEach(task => {
+        const status = normalizeStatus(task.status);
+        if (buckets[status]) {
+          buckets[status].push(task);
+        } else {
+          buckets.todo.push(task);
+        }
+      });
+
+      document.getElementById('taskCount').textContent = tasks.length;
+      document.getElementById('todoCount').textContent = buckets.todo.length;
+      document.getElementById('inProgressCount').textContent = buckets.in_progress.length;
+      document.getElementById('doneCount').textContent = buckets.done.length;
+
+      document.getElementById('todoTasks').innerHTML = renderTaskCards(buckets.todo);
+      document.getElementById('inProgressTasks').innerHTML = renderTaskCards(buckets.in_progress);
+      document.getElementById('doneTasks').innerHTML = renderTaskCards(buckets.done);
+    }
+
+    function renderTaskCards(tasks) {
+      if (!tasks.length) return '<div class="loading-msg">No tasks</div>';
+      return tasks.map(t => `
+        <div class="task-card">
+          <div class="task-title">${esc(t.title)}</div>
+          <div class="task-meta">
+            <span class="task-id">${esc(t.id || t.identifier || '')}</span>
+            <span class="priority-badge priority-${t.priority || 'medium'}">${esc(t.priority || 'medium')}</span>
+          </div>
+          ${t.assignee ? `<div class="task-assignee">Assigned: ${esc(t.assignee)}</div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function normalizeStatus(status) {
+      if (!status) return 'todo';
+      const s = status.toLowerCase().replace(/[\s-]/g, '_');
+      if (s === 'done' || s === 'completed' || s === 'cancelled') return 'done';
+      if (s === 'in_progress' || s === 'in_review' || s === 'running') return 'in_progress';
+      return 'todo';
+    }
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // --- Data Fetching ---
+    async function fetchJSON(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function loadAgents() {
+      try {
+        const agents = await fetchJSON(ENDPOINTS.agents);
+        renderAgents(Array.isArray(agents) ? agents : []);
+        return true;
+      } catch {
+        renderAgents(MOCK_AGENTS);
+        return false;
+      }
+    }
+
+    async function loadTasks() {
+      try {
+        const tasks = await fetchJSON(ENDPOINTS.tasks);
+        renderTasks(Array.isArray(tasks) ? tasks : []);
+        return true;
+      } catch {
+        renderTasks(MOCK_TASKS);
+        return false;
+      }
+    }
+
+    async function loadAll() {
+      const banner = document.getElementById('errorBanner');
+      const badge = document.getElementById('connStatus');
+
+      const [agentsOk, tasksOk] = await Promise.all([loadAgents(), loadTasks()]);
+
+      if (!agentsOk || !tasksOk) {
+        banner.textContent = 'Backend API unavailable \u2014 showing mock data. Start the server to see live data.';
+        banner.style.display = 'block';
+        badge.textContent = 'Mock';
+        badge.style.background = '#f59e0b';
+      } else {
+        banner.style.display = 'none';
+        badge.textContent = 'Live';
+        badge.style.background = '#16a34a';
+      }
+    }
+
+    // --- Init ---
+    loadAll();
+    setInterval(loadAll, 30000);
+  </script>
+</body>
+</html>

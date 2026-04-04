@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ivory AI Dashboard — Overview</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #222536;
+      --border: #2e3148; --accent: #6366f1; --accent2: #818cf8;
+      --text: #e2e8f0; --muted: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .hero { text-align: center; padding: 80px 24px 60px; }
+    .hero-icon { font-size: 48px; margin-bottom: 16px; }
+    .hero-title { font-size: 36px; font-weight: 800; margin-bottom: 12px; background: linear-gradient(135deg, #fff 30%, var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-sub { font-size: 16px; color: var(--muted); max-width: 480px; margin: 0 auto 32px; line-height: 1.6; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-hero { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; text-decoration: none; transition: 0.15s; }
+    .btn-primary { background: var(--accent); color: white; border: 1px solid var(--accent); }
+    .btn-primary:hover { background: var(--accent2); }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+    .section-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; text-align: center; }
+    .apps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 60px; }
+    .app-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; text-decoration: none; color: var(--text); display: block; }
+    .app-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .app-screenshot { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 0; height: 200px; overflow: hidden; position: relative; }
+    .screenshot-mockup { width: 100%; height: 100%; display: flex; font-size: 11px; }
+    .mock-sidebar { width: 80px; background: var(--surface); border-right: 1px solid var(--border); padding: 10px 8px; }
+    .mock-main { flex: 1; display: flex; flex-direction: column; }
+    .mock-topbar { height: 28px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 8px; gap: 4px; }
+    .mock-content { flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .mock-logo { width: 20px; height: 20px; background: var(--accent); border-radius: 4px; margin-bottom: 8px; }
+    .mock-nav { height: 14px; background: var(--border); border-radius: 3px; margin-bottom: 4px; }
+    .mock-nav.active { background: rgba(99,102,241,0.3); }
+    .mock-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .mock-card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px; height: 40px; }
+    .mock-card-num { height: 14px; background: rgba(99,102,241,0.4); border-radius: 2px; width: 40%; margin-bottom: 4px; }
+    .mock-card-label { height: 8px; background: var(--border); border-radius: 2px; width: 70%; }
+    .mock-table { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .mock-thead { height: 14px; background: var(--surface2); }
+    .mock-row { height: 12px; border-top: 1px solid var(--border); display: flex; gap: 4px; align-items: center; padding: 0 4px; }
+    .mock-cell { height: 6px; background: var(--border); border-radius: 1px; }
+    .mock-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .mock-topbar-title { height: 10px; width: 60px; background: var(--border); border-radius: 2px; }
+    .mock-badge { height: 10px; width: 40px; background: rgba(234,179,8,0.3); border-radius: 2px; margin-left: auto; }
+    .app-card-body { padding: 20px; }
+    .app-card-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .app-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+    .app-badge-readonly { background: rgba(234,179,8,0.12); color: #fbbf24; border: 1px solid rgba(234,179,8,0.2); }
+    .app-badge-full { background: rgba(99,102,241,0.12); color: var(--accent2); border: 1px solid rgba(99,102,241,0.2); }
+    .app-card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .feature-list li { font-size: 12px; color: var(--muted); display: flex; align-items: flex-start; gap: 6px; }
+    .feature-list li::before { content: '✓'; color: var(--accent2); font-weight: 700; flex-shrink: 0; }
+    .app-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; font-weight: 600; color: var(--accent2); }
+    .app-link::after { content: '→'; }
+    /* Pages section */
+    .pages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 60px; }
+    .page-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; transition: border-color 0.15s; }
+    .page-card:hover { border-color: var(--accent2); }
+    .page-icon { font-size: 22px; margin-bottom: 8px; }
+    .page-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .page-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+    /* Divider */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0 0 40px; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-icon">📎</div>
+    <h1 class="hero-title">Ivory AI Dashboard</h1>
+    <p class="hero-sub">A complete control plane for your Paperclip AI workforce — monitor agents, manage issues, track costs, and process approvals.</p>
+    <div class="hero-btns">
+      <a href="app.html" class="btn-hero btn-primary">🚀 Open Full Dashboard</a>
+      <a href="dev.html" class="btn-hero btn-secondary">👁 Read-Only Dev Instance</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2 class="section-title">Dashboard Apps</h2>
+    <div class="apps-grid">
+
+      <!-- app.html card -->
+      <a href="app.html" class="app-card">
+        <div class="app-screenshot">
+          <div class="screenshot-mockup">
+            <div class="mock-sidebar">
+              <div class="mock-logo"></div>
+              <div class="mock-nav active"></div>
+              <div class="mock-nav" style="width:80%"></div>
+              <div class="mock-nav" style="width:90%"></div>
+              <div class="mock-nav" style="width:70%;margin-top:8px"></div>
+              <div class="mock-nav" style="width:85%"></div>
+              <div class="mock-nav" style="width:75%"></div>
+              <div style="height:1px;background:var(--border);margin:8px 0"></div>
+              <div class="mock-nav" style="width:60%"></div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-topbar">
+                <div class="mock-topbar-title"></div>
+                <div style="height:8px;width:50px;background:rgba(34,197,94,0.3);border-radius:2px;margin-left:auto;margin-right:4px"></div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-cards">
+                  <div class="mock-card"><div class="mock-card-num"></div><div class="mock-card-label"></div></div>
+                  <div class="mock-card"><div class="mock-card-num" style="background:rgba(59,130,246,0.4)"></div><div class="mock-card-label"></div></div>
+                  <div class="mock-card"><div class="mock-card-num" style="background:rgba(168,85,247,0.4)"></div><div class="mock-card-label"></div></div>
+                </div>
+                <div class="mock-table">
+                  <div class="mock-thead"></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:var(--accent)"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:30%"></div></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:#60a5fa"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:25%"></div></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:#f87171"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:35%"></div></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:#4ade80"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:20%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-card-body">
+          <div class="app-card-title">app.html <span class="app-badge app-badge-full">Full Access</span></div>
+          <p class="app-card-desc">Complete Paperclip control panel with read/write capabilities. Manage your entire AI workforce from one place.</p>
+          <ul class="feature-list">
+            <li>Create &amp; update issues, add comments</li>
+            <li>Agent control: heartbeat, pause/resume</li>
+            <li>Approve or reject pending approvals</li>
+            <li>Cost tracking with budget utilization bars</li>
+            <li>Runs history across all agents</li>
+          </ul>
+          <div class="app-link">Open Dashboard</div>
+        </div>
+      </a>
+
+      <!-- dev.html card -->
+      <a href="dev.html" class="app-card">
+        <div class="app-screenshot">
+          <div class="screenshot-mockup">
+            <div class="mock-sidebar">
+              <div class="mock-logo"></div>
+              <div class="mock-nav active"></div>
+              <div class="mock-nav" style="width:80%"></div>
+              <div class="mock-nav" style="width:90%"></div>
+              <div style="height:1px;background:var(--border);margin:8px 0"></div>
+              <div class="mock-nav" style="width:85%"></div>
+              <div class="mock-nav" style="width:75%"></div>
+            </div>
+            <div class="mock-main">
+              <div class="mock-topbar">
+                <div class="mock-topbar-title"></div>
+                <div class="mock-badge"></div>
+              </div>
+              <div class="mock-content">
+                <div style="height:8px;background:rgba(234,179,8,0.15);border:1px solid rgba(234,179,8,0.2);border-radius:3px;margin-bottom:4px"></div>
+                <div class="mock-cards" style="grid-template-columns:repeat(4,1fr)">
+                  <div class="mock-card"><div class="mock-card-num"></div><div class="mock-card-label"></div></div>
+                  <div class="mock-card"><div class="mock-card-num" style="width:50%"></div><div class="mock-card-label"></div></div>
+                  <div class="mock-card"><div class="mock-card-num" style="background:rgba(59,130,246,0.4);width:35%"></div><div class="mock-card-label"></div></div>
+                  <div class="mock-card"><div class="mock-card-num" style="width:45%"></div><div class="mock-card-label"></div></div>
+                </div>
+                <div class="mock-table">
+                  <div class="mock-thead"></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:#60a5fa"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:25%"></div></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:#4ade80"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:30%"></div></div>
+                  <div class="mock-row"><div class="mock-dot" style="background:var(--muted)"></div><div class="mock-cell" style="flex:1"></div><div class="mock-cell" style="width:20%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-card-body">
+          <div class="app-card-title">dev.html <span class="app-badge app-badge-readonly">Read-Only</span></div>
+          <p class="app-card-desc">Safe read-only view of live Paperclip data. Perfect for testing, demos, and monitoring without risk of mutations.</p>
+          <ul class="feature-list">
+            <li>Live data from real Paperclip API</li>
+            <li>Zero mutations — fully safe to share</li>
+            <li>Agents, Projects, Issues, Approvals views</li>
+            <li>Status badges and priority indicators</li>
+            <li>Credentials stored only in localStorage</li>
+          </ul>
+          <div class="app-link">Open Dev Instance</div>
+        </div>
+      </a>
+    </div>
+
+    <hr class="divider" />
+    <h2 class="section-title">Dashboard Pages</h2>
+    <div class="pages-grid">
+      <div class="page-card"><div class="page-icon">⊞</div><div class="page-name">Dashboard Overview</div><div class="page-desc">Summary cards: agents, projects, in-progress, blocked, completion %, pending approvals, runs today.</div></div>
+      <div class="page-card"><div class="page-icon">🤖</div><div class="page-name">Agents</div><div class="page-desc">All agents with role, adapter, spend, heartbeat trigger, pause/resume controls.</div></div>
+      <div class="page-card"><div class="page-icon">⚡</div><div class="page-name">Runs</div><div class="page-desc">Recent heartbeat runs across all agents, filterable by agent, with status and timing.</div></div>
+      <div class="page-card"><div class="page-icon">📁</div><div class="page-name">Projects</div><div class="page-desc">Project list with status, issue count, and completion progress bars.</div></div>
+      <div class="page-card"><div class="page-icon">📋</div><div class="page-name">Issues</div><div class="page-desc">All issues with status filter, create new issue, view detail panel, add comments.</div></div>
+      <div class="page-card"><div class="page-icon">✅</div><div class="page-name">Approvals</div><div class="page-desc">Approval queue grouped pending vs. resolved, with approve/reject actions.</div></div>
+      <div class="page-card"><div class="page-icon">💰</div><div class="page-name">Costs</div><div class="page-desc">Per-agent and company-wide spend visualization with budget utilization bars.</div></div>
+    </div>
+
+    <hr class="divider" />
+    <div style="text-align:center;color:var(--muted);font-size:12px">
+      Ivory AI Dashboard · Built for Paperclip ·
+      <a href="app.html" style="color:var(--accent2);text-decoration:none">app.html</a> ·
+      <a href="dev.html" style="color:var(--accent2);text-decoration:none">dev.html</a>
+    </div>
+  </div>
+</body>
+</html>

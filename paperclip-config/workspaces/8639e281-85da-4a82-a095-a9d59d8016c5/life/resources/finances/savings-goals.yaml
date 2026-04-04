@@ -1,0 +1,15 @@
+# Savings Goals
+# Status: draft — awaiting board input
+# Last updated: 2026-04-02
+
+goals: []
+  # Template for each goal:
+  # - name: "Emergency Fund"
+  #   target: 25000.00
+  #   current: 10000.00
+  #   currency: USD
+  #   deadline: "2026-12-31"
+  #   priority: high  # high | medium | low
+  #   account: "savings"
+  #   monthly_contribution: 500.00
+  #   notes: "6 months of expenses"

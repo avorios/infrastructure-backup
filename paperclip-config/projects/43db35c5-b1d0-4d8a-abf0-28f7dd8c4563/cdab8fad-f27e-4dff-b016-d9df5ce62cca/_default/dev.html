@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ivory AI Dashboard — Dev</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222536;
+      --border: #2e3148;
+      --accent: #6366f1;
+      --accent2: #818cf8;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --orange: #f97316;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* Layout */
+    .app { display: flex; height: 100vh; overflow: hidden; }
+    .sidebar {
+      width: 220px; min-width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar {
+      height: 52px; min-height: 52px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 12px;
+    }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+    /* Sidebar */
+    .sidebar-logo {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+    .logo-text { font-weight: 600; font-size: 15px; }
+    .logo-badge {
+      font-size: 10px; background: #2d2f3f;
+      border: 1px solid var(--border);
+      color: var(--muted); padding: 1px 6px; border-radius: 4px;
+      margin-left: auto;
+    }
+    .nav { padding: 8px 8px; flex: 1; }
+    .nav-section { margin-bottom: 16px; }
+    .nav-section-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      color: var(--muted); letter-spacing: 0.08em;
+      padding: 0 8px; margin-bottom: 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 8px; border-radius: 6px;
+      color: var(--muted); cursor: pointer;
+      transition: all 0.15s; text-decoration: none;
+      font-size: 13px;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(99,102,241,0.15); color: var(--accent2); }
+    .nav-item .icon { width: 16px; text-align: center; }
+
+    /* Topbar */
+    .topbar-title { font-weight: 600; font-size: 15px; flex: 1; }
+    .topbar-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .status-dot.error { background: var(--red); }
+    .topbar-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 5px 12px; border-radius: 6px;
+      font-size: 12px; cursor: pointer; transition: 0.15s;
+    }
+    .topbar-btn:hover { border-color: var(--accent); color: var(--accent2); }
+    .api-key-input {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); padding: 5px 10px; border-radius: 6px;
+      font-size: 12px; width: 260px; outline: none;
+    }
+    .api-key-input:focus { border-color: var(--accent); }
+    .readonly-badge {
+      background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.3);
+      color: var(--yellow); font-size: 11px; padding: 2px 8px; border-radius: 4px;
+      font-weight: 500;
+    }
+
+    /* Cards */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px;
+    }
+    .card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .card-value { font-size: 28px; font-weight: 700; line-height: 1; }
+    .card-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    /* Section */
+    .section { margin-bottom: 32px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .section-title { font-size: 15px; font-weight: 600; }
+    .section-count { font-size: 12px; color: var(--muted); background: var(--surface2); padding: 2px 8px; border-radius: 10px; }
+
+    /* Table */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; padding: 10px 14px;
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    td { padding: 10px 14px; border-bottom: 1px solid rgba(46,49,72,0.6); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.015); }
+
+    /* Badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px;
+    }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .badge-todo { background: rgba(100,116,139,0.15); color: var(--muted); }
+    .badge-todo .badge-dot { background: var(--muted); }
+    .badge-in_progress { background: rgba(59,130,246,0.12); color: #60a5fa; }
+    .badge-in_progress .badge-dot { background: #60a5fa; }
+    .badge-done { background: rgba(34,197,94,0.12); color: #4ade80; }
+    .badge-done .badge-dot { background: #4ade80; }
+    .badge-blocked { background: rgba(239,68,68,0.12); color: #f87171; }
+    .badge-blocked .badge-dot { background: #f87171; }
+    .badge-in_review { background: rgba(168,85,247,0.12); color: #c084fc; }
+    .badge-in_review .badge-dot { background: #c084fc; }
+    .badge-backlog { background: rgba(100,116,139,0.1); color: #94a3b8; }
+    .badge-backlog .badge-dot { background: #94a3b8; }
+    .badge-cancelled { background: rgba(100,116,139,0.1); color: #64748b; }
+    .badge-cancelled .badge-dot { background: #64748b; }
+
+    .priority-critical { color: var(--red); font-weight: 600; }
+    .priority-high { color: var(--orange); }
+    .priority-medium { color: var(--yellow); }
+    .priority-low { color: var(--muted); }
+
+    /* Agent chip */
+    .agent-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 3px 8px; font-size: 12px;
+    }
+    .agent-avatar {
+      width: 18px; height: 18px; border-radius: 4px;
+      background: var(--accent); display: flex; align-items: center;
+      justify-content: center; font-size: 9px; font-weight: 700; color: white;
+      flex-shrink: 0;
+    }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+
+    /* Loading */
+    .loading { display: flex; align-items: center; justify-content: center; padding: 48px; }
+    .spinner {
+      width: 24px; height: 24px; border: 2px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Agents grid */
+    .agents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .agent-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px;
+      transition: border-color 0.15s;
+    }
+    .agent-card:hover { border-color: var(--accent); }
+    .agent-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .agent-avatar-lg {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .agent-name { font-weight: 600; font-size: 14px; }
+    .agent-title { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .agent-meta { display: flex; gap: 8px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+    .agent-meta span { display: flex; align-items: center; gap: 3px; }
+
+    /* Alert */
+    .alert {
+      background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 8px; padding: 12px 16px;
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 20px; font-size: 13px; color: var(--accent2);
+    }
+
+    /* Identifier */
+    .identifier { font-size: 11px; color: var(--muted); font-family: monospace; }
+
+    /* View switcher */
+    .view-tabs { display: flex; gap: 2px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+    .view-tab {
+      padding: 5px 12px; border-radius: 6px; font-size: 12px;
+      cursor: pointer; color: var(--muted); transition: 0.15s;
+    }
+    .view-tab.active { background: var(--surface); color: var(--text); }
+
+    /* Progress bar */
+    .progress-bar-wrap { background: var(--surface2); border-radius: 4px; height: 5px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.3s; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    /* Page sections */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Setup form */
+    .setup-overlay {
+      position: fixed; inset: 0; background: rgba(15,17,23,0.95);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .setup-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 36px; width: 440px; max-width: 95vw;
+    }
+    .setup-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .setup-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+    .setup-label { font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block; }
+    .setup-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 9px 12px; border-radius: 8px; font-size: 13px;
+      outline: none; margin-bottom: 16px;
+    }
+    .setup-input:focus { border-color: var(--accent); }
+    .setup-btn {
+      width: 100%; background: var(--accent); color: white;
+      border: none; padding: 10px; border-radius: 8px; font-size: 14px;
+      font-weight: 600; cursor: pointer; transition: 0.15s;
+    }
+    .setup-btn:hover { background: var(--accent2); }
+    .setup-hint { font-size: 11px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+    /* Error toast */
+    .toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 16px; font-size: 13px;
+      display: none; z-index: 200; max-width: 320px;
+    }
+    .toast.error { border-color: rgba(239,68,68,0.4); color: #f87171; }
+    .toast.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Setup Overlay -->
+<div class="setup-overlay" id="setupOverlay">
+  <div class="setup-card">
+    <div style="font-size:28px; margin-bottom:12px;">📎</div>
+    <div class="setup-title">Ivory AI Dashboard</div>
+    <div class="setup-sub">Read-only dev instance — enter your Paperclip API credentials to load live data.</div>
+
+    <label class="setup-label" for="apiUrlInput">API URL</label>
+    <input class="setup-input" id="apiUrlInput" type="text" placeholder="http://localhost:3000" />
+
+    <label class="setup-label" for="apiKeyInput">API Key (Bearer token)</label>
+    <input class="setup-input" id="apiKeyInput" type="password" placeholder="Paste your PAPERCLIP_API_KEY…" />
+
+    <label class="setup-label" for="companyIdInput">Company ID (optional — auto-detected)</label>
+    <input class="setup-input" id="companyIdInput" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+
+    <button class="setup-btn" id="connectBtn" onclick="connect()">Connect</button>
+    <div class="setup-hint">Credentials are stored in localStorage and never sent anywhere except your Paperclip API.</div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Main App -->
+<div class="app" id="appShell" style="display:none;">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">Ivory AI</span>
+      <span class="logo-badge">dev</span>
+    </div>
+    <div class="nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Overview</div>
+        <a class="nav-item active" onclick="showPage('overview')" data-page="overview">
+          <span class="icon">⊞</span> Dashboard
+        </a>
+        <a class="nav-item" onclick="showPage('agents')" data-page="agents">
+          <span class="icon">🤖</span> Agents
+        </a>
+        <a class="nav-item" onclick="showPage('projects')" data-page="projects">
+          <span class="icon">📁</span> Projects
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Work</div>
+        <a class="nav-item" onclick="showPage('issues')" data-page="issues">
+          <span class="icon">⚡</span> Issues
+        </a>
+        <a class="nav-item" onclick="showPage('approvals')" data-page="approvals">
+          <span class="icon">✅</span> Approvals
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Settings</div>
+        <a class="nav-item" onclick="resetConfig()">
+          <span class="icon">⚙</span> Reset Config
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Connected</span>
+      </div>
+      <span class="readonly-badge">READ-ONLY</span>
+      <button class="topbar-btn" onclick="refreshAll()">↺ Refresh</button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Overview Page -->
+      <div class="page active" id="page-overview">
+        <div class="alert">
+          📊 This is a read-only dev dashboard. Data is loaded live from your Paperclip API. No mutations are performed.
+        </div>
+        <div class="cards-grid" id="overviewCards">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Recent Activity</div>
+          </div>
+          <div class="table-wrap" id="recentIssues">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agents Page -->
+      <div class="page" id="page-agents">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">All Agents</div>
+            <span class="section-count" id="agentsCount">–</span>
+          </div>
+          <div class="agents-grid" id="agentsGrid">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Page -->
+      <div class="page" id="page-projects">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Projects</div>
+            <span class="section-count" id="projectsCount">–</span>
+          </div>
+          <div class="table-wrap" id="projectsTable">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Issues Page -->
+      <div class="page" id="page-issues">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">All Issues</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="section-count" id="issuesCount">–</span>
+              <select id="issueStatusFilter" onchange="filterIssues()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;font-size:12px;outline:none;">
+                <option value="">All statuses</option>
+                <option value="todo">Todo</option>
+                <option value="in_progress">In Progress</option>
+                <option value="blocked">Blocked</option>
+                <option value="in_review">In Review</option>
+                <option value="done">Done</option>
+                <option value="backlog">Backlog</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap" id="issuesTable">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Approvals Page -->
+      <div class="page" id="page-approvals">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Approvals</div>
+            <span class="section-count" id="approvalsCount">–</span>
+          </div>
+          <div class="table-wrap" id="approvalsTable">
+            <div class="loading"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── State ───────────────────────────────────────────────────────────────────
+  let cfg = { apiUrl: '', apiKey: '', companyId: '' };
+  let cache = { agents: [], projects: [], issues: [], approvals: [], dashboard: null };
+  let agentMap = {};
+
+  // ─── Init ────────────────────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('ivory_cfg');
+    if (saved) {
+      try {
+        cfg = { ...cfg, ...JSON.parse(saved) };
+        if (cfg.apiUrl && cfg.apiKey) {
+          startApp();
+          return;
+        }
+      } catch(_) {}
+    }
+    // Pre-fill from env if available (for local dev)
+    document.getElementById('apiUrlInput').value = 'http://localhost:3000';
+    document.getElementById('setupOverlay').style.display = 'flex';
+  });
+
+  async function connect() {
+    const btn = document.getElementById('connectBtn');
+    btn.textContent = 'Connecting…'; btn.disabled = true;
+    cfg.apiUrl = document.getElementById('apiUrlInput').value.replace(/\/$/, '');
+    cfg.apiKey = document.getElementById('apiKeyInput').value.trim();
+    cfg.companyId = document.getElementById('companyIdInput').value.trim();
+    try {
+      if (!cfg.companyId) {
+        const me = await api('/api/agents/me');
+        cfg.companyId = me.companyId;
+      }
+      localStorage.setItem('ivory_cfg', JSON.stringify(cfg));
+      startApp();
+    } catch(e) {
+      btn.textContent = 'Connect'; btn.disabled = false;
+      showToast('Connection failed: ' + e.message, 'error');
+    }
+  }
+
+  function startApp() {
+    document.getElementById('setupOverlay').style.display = 'none';
+    document.getElementById('appShell').style.display = 'flex';
+    document.getElementById('statusDot').className = 'status-dot';
+    document.getElementById('statusText').textContent = 'Connected';
+    refreshAll();
+  }
+
+  function resetConfig() {
+    localStorage.removeItem('ivory_cfg');
+    location.reload();
+  }
+
+  // ─── API ─────────────────────────────────────────────────────────────────────
+  async function api(path, opts = {}) {
+    const res = await fetch(cfg.apiUrl + path, {
+      ...opts,
+      headers: {
+        'Authorization': 'Bearer ' + cfg.apiKey,
+        'Content-Type': 'application/json',
+        ...(opts.headers || {})
+      }
+    });
+    if (!res.ok) throw new Error(res.status + ' ' + res.statusText);
+    return res.json();
+  }
+
+  // ─── Refresh ─────────────────────────────────────────────────────────────────
+  async function refreshAll() {
+    document.getElementById('statusDot').className = 'status-dot';
+    document.getElementById('statusText').textContent = 'Loading…';
+    try {
+      await Promise.all([loadAgents(), loadProjects(), loadIssues(), loadApprovals()]);
+      renderOverview();
+      document.getElementById('statusText').textContent = 'Connected · ' + new Date().toLocaleTimeString();
+    } catch(e) {
+      document.getElementById('statusDot').className = 'status-dot error';
+      document.getElementById('statusText').textContent = 'Error';
+      showToast('Refresh failed: ' + e.message, 'error');
+    }
+  }
+
+  async function loadAgents() {
+    const data = await api('/api/companies/' + cfg.companyId + '/agents');
+    cache.agents = Array.isArray(data) ? data : (data.agents || []);
+    agentMap = {};
+    cache.agents.forEach(a => { agentMap[a.id] = a; });
+    renderAgents();
+  }
+
+  async function loadProjects() {
+    const data = await api('/api/companies/' + cfg.companyId + '/projects');
+    cache.projects = Array.isArray(data) ? data : (data.projects || []);
+    renderProjects();
+  }
+
+  async function loadIssues() {
+    const data = await api('/api/companies/' + cfg.companyId + '/issues?limit=200');
+    cache.issues = Array.isArray(data) ? data : (data.issues || []);
+    renderIssues();
+  }
+
+  async function loadApprovals() {
+    try {
+      const data = await api('/api/companies/' + cfg.companyId + '/approvals');
+      cache.approvals = Array.isArray(data) ? data : (data.approvals || []);
+    } catch(_) { cache.approvals = []; }
+    renderApprovals();
+  }
+
+  // ─── Render: Overview ────────────────────────────────────────────────────────
+  function renderOverview() {
+    const issues = cache.issues;
+    const byStatus = {};
+    issues.forEach(i => { byStatus[i.status] = (byStatus[i.status] || 0) + 1; });
+
+    const inProgress = byStatus['in_progress'] || 0;
+    const blocked = byStatus['blocked'] || 0;
+    const done = byStatus['done'] || 0;
+    const total = issues.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+
+    document.getElementById('overviewCards').innerHTML = `
+      <div class="card">
+        <div class="card-label">Total Agents</div>
+        <div class="card-value">${cache.agents.length}</div>
+        <div class="card-sub">${cache.agents.filter(a=>a.status==='running').length} active</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Projects</div>
+        <div class="card-value">${cache.projects.length}</div>
+        <div class="card-sub">${cache.projects.filter(p=>p.status==='in_progress').length} in progress</div>
+      </div>
+      <div class="card">
+        <div class="card-label">In Progress</div>
+        <div class="card-value" style="color:var(--blue)">${inProgress}</div>
+        <div class="card-sub">${blocked} blocked</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Completion</div>
+        <div class="card-value">${pct}%</div>
+        <div class="card-sub" style="margin-top:8px;">
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+          <span style="margin-top:4px;display:block">${done} / ${total} done</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Approvals</div>
+        <div class="card-value" style="color:var(--purple)">${cache.approvals.length}</div>
+        <div class="card-sub">${cache.approvals.filter(a=>a.status==='pending').length} pending</div>
+      </div>
+    `;
+
+    // Recent issues
+    const recent = [...cache.issues]
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      .slice(0, 15);
+    document.getElementById('recentIssues').innerHTML = issuesTableHtml(recent);
+  }
+
+  // ─── Render: Agents ──────────────────────────────────────────────────────────
+  function renderAgents() {
+    const agents = cache.agents;
+    document.getElementById('agentsCount').textContent = agents.length;
+    if (!agents.length) {
+      document.getElementById('agentsGrid').innerHTML = '<div class="empty"><div class="empty-icon">🤖</div>No agents found.</div>';
+      return;
+    }
+    document.getElementById('agentsGrid').innerHTML = agents.map(a => `
+      <div class="agent-card">
+        <div class="agent-card-header">
+          <div class="agent-avatar-lg">${(a.name||'?')[0].toUpperCase()}</div>
+          <div>
+            <div class="agent-name">${esc(a.name || 'Unnamed')}</div>
+            <div class="agent-title">${esc(a.title || a.role || '')}</div>
+          </div>
+          <div style="margin-left:auto">${statusBadge(a.status)}</div>
+        </div>
+        <div class="agent-meta">
+          <span>🔧 ${esc(a.adapterType || '–')}</span>
+          ${a.role ? `<span>👤 ${esc(a.role)}</span>` : ''}
+          ${a.budgetMonthlyCents ? `<span>💰 $${(a.budgetMonthlyCents/100).toFixed(0)}/mo</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ─── Render: Projects ────────────────────────────────────────────────────────
+  function renderProjects() {
+    const projects = cache.projects;
+    document.getElementById('projectsCount').textContent = projects.length;
+    if (!projects.length) {
+      document.getElementById('projectsTable').innerHTML = '<div class="empty"><div class="empty-icon">📁</div>No projects found.</div>';
+      return;
+    }
+    document.getElementById('projectsTable').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Name</th><th>Status</th><th>Issues</th><th>Updated</th>
+        </tr></thead>
+        <tbody>
+          ${projects.map(p => {
+            const pIssues = cache.issues.filter(i => i.projectId === p.id);
+            const done = pIssues.filter(i => i.status === 'done').length;
+            return `<tr>
+              <td><strong>${esc(p.name)}</strong></td>
+              <td>${statusBadge(p.status)}</td>
+              <td>${done}/${pIssues.length} done</td>
+              <td style="color:var(--muted)">${relTime(p.updatedAt)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // ─── Render: Issues ──────────────────────────────────────────────────────────
+  let allIssues = [];
+  function renderIssues() {
+    allIssues = cache.issues;
+    filterIssues();
+  }
+  function filterIssues() {
+    const filter = document.getElementById('issueStatusFilter')?.value || '';
+    const issues = filter ? allIssues.filter(i => i.status === filter) : allIssues;
+    document.getElementById('issuesCount').textContent = issues.length;
+    document.getElementById('issuesTable').innerHTML = issuesTableHtml(issues);
+  }
+
+  function issuesTableHtml(issues) {
+    if (!issues.length) return '<div class="empty"><div class="empty-icon">⚡</div>No issues found.</div>';
+    return `
+      <table>
+        <thead><tr>
+          <th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Assignee</th><th>Updated</th>
+        </tr></thead>
+        <tbody>
+          ${issues.map(i => {
+            const agent = agentMap[i.assigneeAgentId];
+            return `<tr>
+              <td class="identifier">${esc(i.identifier || '')}</td>
+              <td style="max-width:300px">${esc(i.title)}</td>
+              <td>${statusBadge(i.status)}</td>
+              <td class="priority-${i.priority}">${i.priority || '–'}</td>
+              <td>${agent ? `<div class="agent-chip"><div class="agent-avatar">${(agent.name||'?')[0]}</div>${esc(agent.name)}</div>` : '<span style="color:var(--muted)">–</span>'}</td>
+              <td style="color:var(--muted)">${relTime(i.updatedAt)}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // ─── Render: Approvals ───────────────────────────────────────────────────────
+  function renderApprovals() {
+    const approvals = cache.approvals;
+    document.getElementById('approvalsCount').textContent = approvals.length;
+    if (!approvals.length) {
+      document.getElementById('approvalsTable').innerHTML = '<div class="empty"><div class="empty-icon">✅</div>No approvals found.</div>';
+      return;
+    }
+    document.getElementById('approvalsTable').innerHTML = `
+      <table>
+        <thead><tr>
+          <th>Title</th><th>Status</th><th>Requested By</th><th>Created</th>
+        </tr></thead>
+        <tbody>
+          ${approvals.map(a => `<tr>
+            <td>${esc(a.title || a.id)}</td>
+            <td>${statusBadge(a.status)}</td>
+            <td style="color:var(--muted)">${esc(a.requestedByAgentId ? (agentMap[a.requestedByAgentId]?.name || a.requestedByAgentId) : a.requestedByUserId || '–')}</td>
+            <td style="color:var(--muted)">${relTime(a.createdAt)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  // ─── Navigation ──────────────────────────────────────────────────────────────
+  const pageTitles = { overview: 'Dashboard', agents: 'Agents', projects: 'Projects', issues: 'Issues', approvals: 'Approvals' };
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.nav-item[data-page]').forEach(el => {
+      el.classList.toggle('active', el.dataset.page === name);
+    });
+    document.getElementById('pageTitle').textContent = pageTitles[name] || name;
+  }
+
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  function esc(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function statusBadge(status) {
+    const s = (status || 'unknown').toLowerCase().replace(' ','_');
+    return `<span class="badge badge-${s}"><span class="badge-dot"></span>${s.replace('_',' ')}</span>`;
+  }
+
+  function relTime(ts) {
+    if (!ts) return '–';
+    const diff = Date.now() - new Date(ts).getTime();
+    const s = Math.floor(diff/1000);
+    if (s < 60) return s + 's ago';
+    const m = Math.floor(s/60);
+    if (m < 60) return m + 'm ago';
+    const h = Math.floor(m/60);
+    if (h < 24) return h + 'h ago';
+    const d = Math.floor(h/24);
+    return d + 'd ago';
+  }
+
+  function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type === 'error' ? ' error' : '');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+</script>
+</body>
+</html>

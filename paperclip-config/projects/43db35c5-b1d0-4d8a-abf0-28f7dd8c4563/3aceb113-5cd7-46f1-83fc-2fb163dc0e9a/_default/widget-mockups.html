@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HITCO Widget Mockups — DAS-31</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sf: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    --radius-widget: 22px;
+  }
+
+  body {
+    font-family: var(--sf);
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 30% 20%, #1a2744 0%, #0d1117 40%, #050a0f 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle star-field */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 200px 200px, 130px 130px;
+    background-position: 0 0, 65px 65px;
+    pointer-events: none;
+    opacity: 0.18;
+  }
+
+  h1.page-title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  .widget-row {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .widget-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .option-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.38);
+  }
+
+  /* ─── OPTION A: Command Center ─────────────────── */
+
+  .widget-a {
+    width: 329px;
+    height: 155px;
+    border-radius: var(--radius-widget);
+    background: rgba(28, 28, 30, 0.88);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow:
+      0 2px 1px rgba(255,255,255,0.06) inset,
+      0 24px 64px rgba(0,0,0,0.7),
+      0 4px 16px rgba(0,0,0,0.4);
+    padding: 18px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .widget-a::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.14) 40%, rgba(255,255,255,0.14) 60%, transparent 90%);
+  }
+
+  .wa-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .wa-icon {
+    width: 20px; height: 20px;
+    background: linear-gradient(145deg, #2D6BE4, #1A4FC7);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .wa-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: -0.01em;
+  }
+
+  .wa-subtitle {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-left: auto;
+    font-weight: 400;
+  }
+
+  .wa-stats {
+    display: flex;
+    gap: 0;
+    flex: 1;
+    align-items: stretch;
+  }
+
+  .wa-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  .wa-stat + .wa-stat {
+    border-left: 1px solid rgba(255,255,255,0.07);
+    padding-left: 16px;
+  }
+
+  .wa-stat:first-child {
+    padding-left: 0;
+  }
+
+  .wa-num {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: #ffffff;
+  }
+
+  .wa-stat.active .wa-num { color: #34C759; }
+  .wa-stat.progress .wa-num { color: #0A84FF; }
+  .wa-stat.blocked .wa-num { color: #FF453A; }
+
+  .wa-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.38);
+    letter-spacing: 0.02em;
+    margin-top: 3px;
+    text-transform: uppercase;
+  }
+
+  .wa-dots {
+    display: flex;
+    gap: 4px;
+    margin-top: 5px;
+  }
+
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+
+  .dot.green { background: #34C759; }
+  .dot.blue  { background: #0A84FF; }
+  .dot.yellow{ background: #FFD60A; }
+  .dot.red   { background: #FF453A; }
+  .dot.gray  { background: rgba(255,255,255,0.2); }
+
+  /* ─── OPTION B: Activity Pulse ──────────────────── */
+
+  .widget-b {
+    width: 329px;
+    height: 329px;
+    border-radius: var(--radius-widget);
+    background: rgba(10, 12, 18, 0.95);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(10, 132, 255, 0.18);
+    box-shadow:
+      0 0 0 1px rgba(10,132,255,0.06),
+      0 2px 1px rgba(255,255,255,0.04) inset,
+      0 32px 80px rgba(0,0,0,0.8),
+      0 0 40px rgba(10,132,255,0.06);
+    padding: 20px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .widget-b::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(10,132,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .wb-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .wb-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .wb-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(10,132,255,0.8);
+  }
+
+  .wb-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  .wb-badge {
+    margin-left: auto;
+    background: rgba(10,132,255,0.15);
+    border: 1px solid rgba(10,132,255,0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #0A84FF;
+  }
+
+  .wb-chart-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 8px;
+  }
+
+  .wb-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 60px;
+    margin-bottom: 20px;
+  }
+
+  .bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar {
+    width: 100%;
+    border-radius: 4px 4px 2px 2px;
+    background: rgba(10,132,255,0.25);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .bar.today {
+    background: #0A84FF;
+    box-shadow: 0 0 8px rgba(10,132,255,0.5);
+  }
+
+  .bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+  }
+
+  .bar-day {
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 500;
+  }
+
+  .wb-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 14px;
+  }
+
+  .wb-agents-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 10px;
+  }
+
+  .wb-agent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .wb-agent {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .wb-status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .wb-status-dot.active { background: #34C759; box-shadow: 0 0 6px rgba(52,199,89,0.6); }
+  .wb-status-dot.busy   { background: #FFD60A; box-shadow: 0 0 6px rgba(255,214,10,0.5); }
+  .wb-status-dot.idle   { background: rgba(255,255,255,0.2); }
+
+  .wb-agent-name {
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+    flex: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .wb-agent-task {
+    font-size: 10px;
+    color: rgba(255,255,255,0.28);
+    font-weight: 400;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ─── OPTION C: Glanceable Summary ──────────────── */
+
+  .widget-c {
+    width: 155px;
+    height: 155px;
+    border-radius: var(--radius-widget);
+    background: rgba(242, 242, 247, 0.90);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow:
+      0 2px 1px rgba(255,255,255,0.9) inset,
+      0 20px 60px rgba(0,0,0,0.45),
+      0 2px 8px rgba(0,0,0,0.2);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .widget-c::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: rgba(255,255,255,0.9);
+  }
+
+  .wc-ring-wrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  .wc-svg {
+    width: 64px;
+    height: 64px;
+    transform: rotate(-90deg);
+  }
+
+  .wc-track {
+    fill: none;
+    stroke: rgba(0,0,0,0.08);
+    stroke-width: 5;
+  }
+
+  .wc-progress {
+    fill: none;
+    stroke: #007AFF;
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-dasharray: 163;
+    stroke-dashoffset: 41; /* ~75% complete */
+    filter: drop-shadow(0 0 3px rgba(0,122,255,0.4));
+  }
+
+  .wc-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .wc-big-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1C1C1E;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .wc-ring-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.35);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .wc-main-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.5);
+    letter-spacing: -0.01em;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* ─── Footer note ───────────────────────────────── */
+
+  .page-footer {
+    margin-top: 52px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.22);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  .option-desc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.28);
+    text-align: center;
+    max-width: 160px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">HITCO Workforce Dashboard — Widget Mockups · DAS-31</h1>
+
+<div class="widget-row">
+
+  <!-- ── OPTION A ── -->
+  <div class="widget-col">
+    <span class="option-label">Option A</span>
+
+    <div class="widget-a">
+      <div class="wa-header">
+        <div class="wa-icon">⚡</div>
+        <span class="wa-title">HITCO Workforce</span>
+        <span class="wa-subtitle">Live</span>
+      </div>
+      <div class="wa-stats">
+        <div class="wa-stat active">
+          <div class="wa-num">12</div>
+          <div class="wa-label">Active</div>
+          <div class="wa-dots">
+            <div class="dot green"></div>
+            <div class="dot green"></div>
+            <div class="dot green"></div>
+            <div class="dot green"></div>
+          </div>
+        </div>
+        <div class="wa-stat progress">
+          <div class="wa-num">34</div>
+          <div class="wa-label">In Progress</div>
+          <div class="wa-dots">
+            <div class="dot blue"></div>
+            <div class="dot blue"></div>
+            <div class="dot blue"></div>
+            <div class="dot gray"></div>
+          </div>
+        </div>
+        <div class="wa-stat blocked">
+          <div class="wa-num">3</div>
+          <div class="wa-label">Blocked</div>
+          <div class="wa-dots">
+            <div class="dot red"></div>
+            <div class="dot gray"></div>
+            <div class="dot gray"></div>
+            <div class="dot gray"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="option-desc">Medium · Dark glass<br>Data-dense at-a-glance</span>
+  </div>
+
+  <!-- ── OPTION B ── -->
+  <div class="widget-col">
+    <span class="option-label">Option B</span>
+
+    <div class="widget-b">
+      <div class="wb-header">
+        <div class="wb-brand">
+          <div class="wb-eyebrow">HITCO</div>
+          <div class="wb-name">Workforce</div>
+        </div>
+        <div class="wb-badge">● Live</div>
+      </div>
+
+      <div class="wb-chart-label">Task Activity — Last 7 Days</div>
+      <div class="wb-chart">
+        <div class="bar-wrap">
+          <div class="bar" style="height:28px"></div>
+          <div class="bar-day">T</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar" style="height:42px"></div>
+          <div class="bar-day">W</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar" style="height:35px"></div>
+          <div class="bar-day">T</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar" style="height:50px"></div>
+          <div class="bar-day">F</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar" style="height:20px"></div>
+          <div class="bar-day">S</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar" style="height:15px"></div>
+          <div class="bar-day">S</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar today" style="height:58px"></div>
+          <div class="bar-day" style="color:rgba(10,132,255,0.7)">M</div>
+        </div>
+      </div>
+
+      <div class="wb-divider"></div>
+
+      <div class="wb-agents-label">Agents</div>
+      <div class="wb-agent-list">
+        <div class="wb-agent">
+          <div class="wb-status-dot active"></div>
+          <div class="wb-agent-name">Project Manager</div>
+          <div class="wb-agent-task">Widget mockups</div>
+        </div>
+        <div class="wb-agent">
+          <div class="wb-status-dot active"></div>
+          <div class="wb-agent-name">Frontend Dev</div>
+          <div class="wb-agent-task">Dashboard UI</div>
+        </div>
+        <div class="wb-agent">
+          <div class="wb-status-dot busy"></div>
+          <div class="wb-agent-name">Backend Dev</div>
+          <div class="wb-agent-task">API endpoints</div>
+        </div>
+        <div class="wb-agent">
+          <div class="wb-status-dot active"></div>
+          <div class="wb-agent-name">QA Engineer</div>
+          <div class="wb-agent-task">Regression tests</div>
+        </div>
+        <div class="wb-agent">
+          <div class="wb-status-dot idle"></div>
+          <div class="wb-agent-name">Content Writer</div>
+          <div class="wb-agent-task">Idle</div>
+        </div>
+      </div>
+    </div>
+
+    <span class="option-desc">Large · Deep dark + blue<br>Activity chart + agent list</span>
+  </div>
+
+  <!-- ── OPTION C ── -->
+  <div class="widget-col">
+    <span class="option-label">Option C</span>
+
+    <div class="widget-c">
+      <div class="wc-ring-wrap">
+        <svg class="wc-svg" viewBox="0 0 64 64">
+          <circle class="wc-track" cx="32" cy="32" r="26"/>
+          <circle class="wc-progress" cx="32" cy="32" r="26"/>
+        </svg>
+        <div class="wc-center">
+          <div class="wc-big-num">12</div>
+          <div class="wc-ring-label">Agents</div>
+        </div>
+      </div>
+      <div class="wc-main-label">75% tasks<br>done today</div>
+    </div>
+
+    <span class="option-desc">Small · Light glass<br>Single-focus glance</span>
+  </div>
+
+</div>
+
+<div class="page-footer">Mockups for DAS-31 · HITCO AI Workforce Dashboard · M4 macOS Desktop Widget</div>
+
+</body>
+</html>

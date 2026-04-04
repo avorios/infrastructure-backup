@@ -1,0 +1,60 @@
+{
+  "$meta": {
+    "version": 1,
+    "updatedAt": "2026-04-04T03:23:13.157Z",
+    "source": "configure"
+  },
+  "database": {
+    "mode": "embedded-postgres",
+    "embeddedPostgresDataDir": "/Users/ivoryrobinson/.paperclip/instances/default/db",
+    "embeddedPostgresPort": 54329,
+    "backup": {
+      "enabled": true,
+      "intervalMinutes": 60,
+      "retentionDays": 30,
+      "dir": "/Users/ivoryrobinson/.paperclip/instances/default/data/backups"
+    }
+  },
+  "logging": {
+    "mode": "file",
+    "logDir": "/Users/ivoryrobinson/.paperclip/instances/default/logs"
+  },
+  "server": {
+    "deploymentMode": "authenticated",
+    "exposure": "private",
+    "host": "0.0.0.0",
+    "port": 47976,
+    "allowedHostnames": [
+      "100.72.24.35",
+      "100.90.109.88",
+      "im4.tailb4e23b.ts.net",
+      "im1.tailb4e23b.ts.net",
+      "localhost",
+      "127.0.0.1"
+    ],
+    "serveUi": true
+  },
+  "auth": {
+    "baseUrlMode": "auto",
+    "disableSignUp": false
+  },
+  "storage": {
+    "provider": "local_disk",
+    "localDisk": {
+      "baseDir": "/Users/ivoryrobinson/.paperclip/instances/default/data/storage"
+    },
+    "s3": {
+      "bucket": "paperclip",
+      "region": "us-east-1",
+      "prefix": "",
+      "forcePathStyle": false
+    }
+  },
+  "secrets": {
+    "provider": "local_encrypted",
+    "strictMode": false,
+    "localEncrypted": {
+      "keyFilePath": "/Users/ivoryrobinson/.paperclip/instances/default/secrets/master.key"
+    }
+  }
+}

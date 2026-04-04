@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HITCO Workforce — Desktop Widget</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sf: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    --blue:   #0A84FF;
+    --green:  #34C759;
+    --yellow: #FFD60A;
+    --red:    #FF453A;
+    --bg:     rgba(10, 12, 20, 0.96);
+    --r:      22px;
+  }
+
+  body {
+    font-family: var(--sf);
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse 80% 60% at 25% 10%, #0e1f3d 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 75% 80%, #0a1628 0%, transparent 60%),
+      #06090f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Subtle grid overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  /* ── Widget Shell ── */
+  .widget {
+    width: 340px;
+    border-radius: var(--r);
+    background: var(--bg);
+    border: 1px solid rgba(10, 132, 255, 0.15);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      0 32px 80px rgba(0,0,0,0.85),
+      0 0 60px rgba(10,132,255,0.05);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Top glow */
+  .widget::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 280px; height: 140px;
+    background: radial-gradient(ellipse, rgba(10,132,255,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 18px 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .app-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(145deg, #1060D8, #0A84FF);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(10,132,255,0.4);
+  }
+
+  .header-text { flex: 1; }
+
+  .brand {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(10,132,255,0.75);
+    line-height: 1;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .live-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(52,199,89,0.12);
+    border: 1px solid rgba(52,199,89,0.25);
+    border-radius: 20px;
+    padding: 3px 9px 3px 7px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.04em;
+  }
+
+  .live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+    50%       { opacity: 0.5; box-shadow: 0 0 2px var(--green); }
+  }
+
+  /* ── KPI Row ── */
+  .kpis {
+    display: flex;
+    gap: 0;
+    padding: 14px 18px 0;
+  }
+
+  .kpi {
+    flex: 1;
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: 12px;
+    position: relative;
+  }
+
+  .kpi + .kpi::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 1px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .kpi-num {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .kpi-num.green  { color: var(--green); text-shadow: 0 0 14px rgba(52,199,89,0.35); }
+  .kpi-num.blue   { color: var(--blue);  text-shadow: 0 0 14px rgba(10,132,255,0.35); }
+  .kpi-num.red    { color: var(--red);   text-shadow: 0 0 14px rgba(255,69,58,0.35); }
+
+  .kpi-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.28);
+    margin-top: 4px;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.05);
+    margin: 14px 18px 0;
+  }
+
+  /* ── Chart ── */
+  .section-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.22);
+    padding: 12px 18px 8px;
+  }
+
+  .chart-area {
+    padding: 0 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 68px;
+  }
+
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar-fill {
+    width: 100%;
+    border-radius: 4px 4px 3px 3px;
+    position: relative;
+    overflow: hidden;
+    min-height: 4px;
+  }
+
+  .bar-fill.past {
+    background: linear-gradient(to top, rgba(10,132,255,0.2), rgba(10,132,255,0.1));
+  }
+
+  .bar-fill.today {
+    background: linear-gradient(to top, #0A84FF, #5BB0FF);
+    box-shadow: 0 0 10px rgba(10,132,255,0.5), 0 0 20px rgba(10,132,255,0.2);
+  }
+
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 35%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent);
+  }
+
+  .bar-day {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  .bar-day.past  { color: rgba(255,255,255,0.2); }
+  .bar-day.today { color: rgba(10,132,255,0.85); }
+
+  /* ── Agent List ── */
+  .agents {
+    padding: 0 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .agent-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 8px;
+    border-radius: 9px;
+    transition: background 0.15s;
+  }
+
+  .agent-row:hover { background: rgba(255,255,255,0.04); }
+
+  .status-ring {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    position: relative;
+  }
+
+  .status-ring.active  { background: rgba(52,199,89,0.12);  border: 1.5px solid rgba(52,199,89,0.3); }
+  .status-ring.busy    { background: rgba(255,214,10,0.1);  border: 1.5px solid rgba(255,214,10,0.25); }
+  .status-ring.idle    { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.08); }
+
+  .status-pip {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg);
+  }
+
+  .status-pip.active { background: var(--green); box-shadow: 0 0 5px var(--green); }
+  .status-pip.busy   { background: var(--yellow); box-shadow: 0 0 5px var(--yellow); }
+  .status-pip.idle   { background: rgba(255,255,255,0.2); }
+
+  .agent-info { flex: 1; min-width: 0; }
+
+  .agent-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.82);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agent-task {
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+
+  /* Visual task bar */
+  .task-bar-wrap {
+    width: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+  }
+
+  .task-bar-track {
+    width: 100%;
+    height: 3px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .task-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  .task-bar-fill.active { background: var(--green); }
+  .task-bar-fill.busy   { background: var(--yellow); }
+  .task-bar-fill.idle   { background: rgba(255,255,255,0.12); }
+
+  .task-count {
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid rgba(255,255,255,0.04);
+    padding: 9px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-time {
+    font-size: 10px;
+    color: rgba(255,255,255,0.18);
+    font-weight: 500;
+  }
+
+  .footer-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  .trend-arrow {
+    font-size: 9px;
+  }
+</style>
+</head>
+<body>
+
+<div class="widget">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="app-icon">🤖</div>
+    <div class="header-text">
+      <div class="brand">HITCO</div>
+      <div class="title">Workforce</div>
+    </div>
+    <div class="live-pill">
+      <div class="live-dot"></div>
+      LIVE
+    </div>
+  </div>
+
+  <!-- KPI Row -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-num green">12</div>
+      <div class="kpi-label">Active</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num blue">34</div>
+      <div class="kpi-label">In Progress</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num red">3</div>
+      <div class="kpi-label">Blocked</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Activity Chart -->
+  <div class="section-label">Task Activity — 7 Days</div>
+  <div class="chart-area">
+    <div class="chart-bars">
+      <div class="bar-col">
+        <div class="bar-fill past" style="height:32px"></div>
+        <div class="bar-day past">T</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-fill past" style="height:46px"></div>
+        <div class="bar-day past">W</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-fill past" style="height:38px"></div>
+        <div class="bar-day past">T</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-fill past" style="height:54px"></div>
+        <div class="bar-day past">F</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-fill past" style="height:18px"></div>
+        <div class="bar-day past">S</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-fill past" style="height:12px"></div>
+        <div class="bar-day past">S</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-fill today" style="height:62px"></div>
+        <div class="bar-day today">M</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider" style="margin-top:14px"></div>
+
+  <!-- Agent List -->
+  <div class="section-label">Agents</div>
+  <div class="agents">
+
+    <div class="agent-row">
+      <div class="status-ring active">
+        🧠
+        <div class="status-pip active"></div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Project Manager</div>
+        <div class="agent-task">Widget mockups · DAS-31</div>
+      </div>
+      <div class="task-bar-wrap">
+        <div class="task-bar-track"><div class="task-bar-fill active" style="width:80%"></div></div>
+        <div class="task-count">8 tasks</div>
+      </div>
+    </div>
+
+    <div class="agent-row">
+      <div class="status-ring active">
+        🎨
+        <div class="status-pip active"></div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Frontend Dev</div>
+        <div class="agent-task">Dashboard UI</div>
+      </div>
+      <div class="task-bar-wrap">
+        <div class="task-bar-track"><div class="task-bar-fill active" style="width:65%"></div></div>
+        <div class="task-count">6 tasks</div>
+      </div>
+    </div>
+
+    <div class="agent-row">
+      <div class="status-ring busy">
+        ⚙️
+        <div class="status-pip busy"></div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Backend Dev</div>
+        <div class="agent-task">API endpoints</div>
+      </div>
+      <div class="task-bar-wrap">
+        <div class="task-bar-track"><div class="task-bar-fill busy" style="width:90%"></div></div>
+        <div class="task-count">11 tasks</div>
+      </div>
+    </div>
+
+    <div class="agent-row">
+      <div class="status-ring active">
+        🔬
+        <div class="status-pip active"></div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">QA Engineer</div>
+        <div class="agent-task">Regression tests</div>
+      </div>
+      <div class="task-bar-wrap">
+        <div class="task-bar-track"><div class="task-bar-fill active" style="width:50%"></div></div>
+        <div class="task-count">5 tasks</div>
+      </div>
+    </div>
+
+    <div class="agent-row">
+      <div class="status-ring idle">
+        ✍️
+        <div class="status-pip idle"></div>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">Content Writer</div>
+        <div class="agent-task">Idle</div>
+      </div>
+      <div class="task-bar-wrap">
+        <div class="task-bar-track"><div class="task-bar-fill idle" style="width:10%"></div></div>
+        <div class="task-count">1 task</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-time">Updated just now</div>
+    <div class="footer-trend">
+      <span class="trend-arrow">↑</span>
+      +12% today
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

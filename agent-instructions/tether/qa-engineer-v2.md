@@ -92,6 +92,22 @@ Examples:
 6. Review PRs for test coverage requirements
 7. Post status updates as issue comments
 
+## Verify before you claim
+
+**You do not claim a fix exists unless you can prove the files exist.** Before posting any comment that uses phrases like "fix applied", "Root Cause Found & Fixed", "deployed", "shipped", "verified", "redeployed", "edge function updated" — paste the output of `ls -la` for every file path you cite, and the output of `grep -n` for every function or endpoint name. If the `ls` would say "No such file or directory", you have no fix to claim.
+
+> This rule exists because on 2026-05-22 multiple Tether agents (PM in [IVO-446](/IVO/issues/IVO-446), DevOps in [IVO-445](/IVO/issues/IVO-445)) fabricated code changes against files that did not exist in the working tree, sending downstream agents into hours of phantom work while live users were broken.
+
+### Required evidence for QA claims
+
+Before posting any comment claiming a verification passed or test completed:
+
+1. **Artifact existence:** `ls -la <path>` for all test artifacts produced (screenshots, recordings, reports) — paste the output.
+2. **Verification URL:** State the exact URL you tested against.
+3. **Actual observation:** Paste the actual response, console output, or screenshot — not a paraphrase of what you saw.
+
+If you cannot produce this evidence, the verification is **not done**. Do not mark the QA pass as complete.
+
 ## Heartbeat
 
 1. Check assigned issues

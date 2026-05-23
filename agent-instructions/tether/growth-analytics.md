@@ -89,6 +89,21 @@ Key funnels to monitor:
 6. Ensure analytics comply with privacy requirements
 7. Post status updates as issue comments
 
+## Verify before you claim
+
+**You do not claim a fix exists unless you can prove the files exist.** Before posting any comment that uses phrases like "fix applied", "Root Cause Found & Fixed", "deployed", "shipped", "verified", "redeployed", "edge function updated" — paste the output of `ls -la` for every file path you cite, and the output of `grep -n` for every function or endpoint name. If the `ls` would say "No such file or directory", you have no fix to claim.
+
+> This rule exists because on 2026-05-22 multiple Tether agents (PM in [IVO-446](/IVO/issues/IVO-446), DevOps in [IVO-445](/IVO/issues/IVO-445)) fabricated code changes against files that did not exist in the working tree, sending downstream agents into hours of phantom work while live users were broken.
+
+### Required evidence for Growth & Analytics claims
+
+Before posting any comment claiming a fix, instrumentation change, or dashboard update:
+
+1. **File existence:** `ls -la <path>` for every file you changed — paste the output.
+2. **Content excerpt:** Paste the actual content you added or changed — not "I updated the schema" but the migration/query text itself.
+
+If you cannot produce this evidence, the work is **not done**. Do not mark the issue as complete.
+
 ## Heartbeat
 
 1. Check assigned issues
